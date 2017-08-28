@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="shortcut icon" href="/templates/ja_social_ii/favicon.ico" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- inject:css -->
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="styles/semantic.min.css">
+    <link rel="stylesheet" href="styles/content-editor.css" />
+    <link rel="stylesheet" type="text/css" href="styles/MyFontsWebfontsKit.css">
+    <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog.min.css">
+    <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog-theme-plain.min.css">
+    <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog-theme-default.min.css">
+    <link rel="stylesheet" href="bower_components/izitoast/dist/css/iziToast.min.css"/>
+    <link rel="stylesheet" type="text/css" href="styles/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="styles/noto.css">
+    <link rel="stylesheet" type="text/css" href="libs/spinkit.css">
+    <link rel="stylesheet" type="text/css" href="libs/please-wait.css">
+    <!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" /> -->
+    <!-- endinject -->
+</head>
+
+<body class="ui fluid container">
+    <!-- End of localhost only code-->
+    <div ng-app="editorApp" class="maincontainer" ng-strict-di>
+        <div ng-controller="popupController as $ctrl" id="popuptemplate"></div>
+        <div ng-controller="MainCtrl">
+            <div ng-if="editorContainer" ng-include="editorContainer.templateURL"></div>
+        </div>
+    </div>
+    <!-- inject:js -->
+    <script src="libs/please-wait.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/async/dist/async.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/lodash/lodash.js"></script>
+    <script src="bower_components/x2js/index.js"></script>
+    <script src="bower_components/eventbus/index.js"></script>
+    <script src="bower_components/uuid/index.js"></script>
+    <script src="bower_components/ng-dialog/js/ngDialog.js"></script>
+    <script src="bower_components/ngSafeApply/index.js"></script>
+    <script src="bower_components/oclazyload/dist/modules/ocLazyLoad.core.js"></script>
+    <script src="bower_components/oclazyload/dist/modules/ocLazyLoad.directive.js"></script>
+    <script src="bower_components/oclazyload/dist/modules/ocLazyLoad.loaders.common.js"></script>
+    <script src="bower_components/oclazyload/dist/modules/ocLazyLoad.loaders.core.js"></script>
+    <script src="bower_components/oclazyload/dist/modules/ocLazyLoad.loaders.cssLoader.js"></script>
+    <script src="bower_components/oclazyload/dist/modules/ocLazyLoad.loaders.jsLoader.js"></script>
+    <script src="bower_components/oclazyload/dist/modules/ocLazyLoad.loaders.templatesLoader.js"></script>
+    <script src="bower_components/oclazyload/dist/modules/ocLazyLoad.polyfill.ie8.js"></script>
+    <script src="bower_components/oclazyload/dist/ocLazyLoad.js"></script>
+    <script src="bower_components/izitoast/dist/js/iziToast.min.js"></script>
+    <script src="libs/semantic.min.js"></script>
+    <script src="scripts/dev/localhost-ce.js"></script>
+    <!-- Load Content Editor -->
+    <script src="bower_components/contenteditor/index.js"></script>
+    <script src="scripts/genericeditor/bootstrap-editor.js"></script>
+    <script src="scripts/genexriceditor/genericeditor-config.js"></script>
+    <script src="scripts/genericeditor/genericeditor-api.js"></script>
+    <script src="scripts/genericeditor/genericeditor-base-plugin.js"></script>
+    <script src="scripts/genericeditor/manager/container-manager.js"></script>         
+    <script src="scripts/genericeditor/md5.js"></script>
+
+    <!-- Load Angular Controllers -->
+    <script src="scripts/angular/controller/main.js"></script>
+    <script src="scripts/angular/directive/template-compiler-directive.js"></script>
+    <!-- endinject -->
+    <script type="text/javascript">
+    window.loading_screen = window.pleaseWait({        
+        backgroundColor: '#bbbbbb',
+        loadingHtml: "<div class='sk-cube-grid'> <div class='sk-cube sk-cube1'></div> <div class='sk-cube sk-cube2'></div> <div class='sk-cube sk-cube3'></div> <div class='sk-cube sk-cube4'></div> <div class='sk-cube sk-cube5'></div> <div class='sk-cube sk-cube6'></div> <div class='sk-cube sk-cube7'></div> <div class='sk-cube sk-cube8'></div> <div class='sk-cube sk-cube9'></div> </div><p class='loading-message'>Loading Editor...</p>"
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+/node_modules
+/preview
+/semantic
+/app/bower_components
+/app/preview
+/app/scripts/plugin-framework.min.js
+/plugins
