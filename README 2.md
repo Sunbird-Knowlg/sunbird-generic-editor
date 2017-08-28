@@ -1,5 +1,5 @@
-# collection-editor
-Collection Editor to support content types like Book, Collection, Course, Lesson Plan
+# Generic editor
+Generic editor can used to edit non-ECML content type (H5P, epub, PDF, HTML, Youtube, Video). 
 
 ### Steps to setup
 1. Clone this repo and [Content-Plugins repo](https://github.com/ekstep/CE-Core-Plugins) 
@@ -7,5 +7,5 @@ Collection Editor to support content types like Book, Collection, Course, Lesson
 3. `cd app` and run `bower install`.
 5. Create a symlink to 'Content-plugins' (`ln -s ../Content-Plugins plugins`)
 for windows:
-`F:\Ekstep\Content-Editor>mklink /d plugins ..\Content-Plugins`
+`F:\Ekstep\generic-editor>mklink /d plugins ..\Content-Plugins`
 `symbolic link created for plugins <<===>> ..\Content-Plugins`
