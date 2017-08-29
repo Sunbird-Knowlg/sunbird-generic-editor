@@ -6,3 +6,94 @@
     font-weight: 300;
     font-family: "raleway", sans-serif;
 }
+
+#basicEditorHeader {
+    height: 55px;
+    border-bottom: 0.1px solid #D4D4D4;
+}
+
+#basicEditorBody {
+    height: calc( 100vh - 55px);
+    margin-top: 0;
+}
+
+#logoContainer {
+    width: 60px!important;
+    height: 55px!important;
+    background: #2e9fd9;
+}
+
+#logo {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    display: block;
+    width: 32.94px;
+    height: 33.9px;
+}
+
+#downloadButton,
+#previewButton,
+#closeButton,
+#saveButton {
+    /* padding: 0; */
+    box-shadow: none;
+    background: none;
+    color: #4a4a4a;
+}
+
+
+#saveButton:hover,
+#downloadButton:hover,
+#previewButton:hover {
+    /* background: #2E9FD9; */
+    color: #2e9fd9;
+}
+
+
+#closeButton {
+    padding: 0!important;
+    box-shadow: none;
+}
+
+#closeButton:hover {
+    color: #fd2313;
+}
+
+#contentTitle {
+    position: relative;
+    top: -1vh;
+    color: #4a4a4a;
+}
+
+#editPreview {
+    margin: 1vh auto;
+    width: 900px;
+    height: calc( 900px / (16/9) );
+    background: #fff;
+    -webkit-box-shadow: 0 0 0 1px #d4d4d5, 0 2px 4px 0 rgba(34, 36, 38, .12), 0 2px 10px 0 rgba(34, 36, 38, .15);
+    box-shadow: 0 0 0 1px #d4d4d5, 0 2px 4px 0 rgba(34, 36, 38, .12), 0 2px 10px 0 rgba(34, 36, 38, .15);
+}
+
+#basicEditorBody {
+    background: #eeeeee;
+}
+
+#sideBarContainer {
+    border-left: 0.1px solid #d4d4d4;
+    color: #9b9b9b;
+}
+
+#sideBarTitle {
+    border-bottom: 0.1px solid #d4d4d4;
+    margin-top: -1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+}
