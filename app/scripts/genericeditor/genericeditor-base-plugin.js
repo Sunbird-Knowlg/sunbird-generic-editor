@@ -74,6 +74,10 @@ org.ekstep.genericeditor.basePlugin = Class.extend({
         _.forEach(instance.manifest.editor.canvasarea, function(canvas) {
             org.ekstep.contenteditor.canvasManager.register(canvas, instance.manifest);
         });
+
+        _.forEach(instance.manifest.editor.sidebarMenu, function(sidebarMenu) {
+            org.ekstep.contenteditor.sidebarManager.registerSidebarMenu(sidebarMenu, instance.manifest);
+        });
     },
 
     /**
