@@ -12,9 +12,6 @@ var app = express();
 
 // all environments
 app.set('port', 3000);
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json({limit: '50mb'}))
-app.use(express.static(path.join(__dirname, '.')));
 
 app.use('/action', proxy('dev.ekstep.in', {
     https: true,
@@ -31,6 +28,9 @@ app.use('/action', proxy('dev.ekstep.in', {
         return proxyReqOpts;
     }
 }));
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json({limit: '50mb'}))
+app.use(express.static(path.join(__dirname, '.')));
 
 var routes = __dirname + '/server/routes', route_files = fs.readdirSync(routes);
 route_files.forEach(function (file) {
