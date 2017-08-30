@@ -28,6 +28,12 @@ app.use('/action', proxy('dev.ekstep.in', {
         return proxyReqOpts;
     }
 }));
+app.use('/assets/public', proxy('dev.ekstep.in', {
+    https: true,
+    proxyReqPathResolver: function(req) {
+        return "/assets/public" + urlHelper.parse(req.url).path;
+    }
+}));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(express.static(path.join(__dirname, '.')));
