@@ -85,7 +85,7 @@ gulp.task('setup', function() {
 gulp.task('minifyCE', function() {
     return gulp.src(scriptfiles)
         .pipe(concat('genericeditor.min.js'))
-        .pipe(gulp.dest('genericeditor-editor/scripts'));
+        .pipe(gulp.dest('generic-editor/scripts'));
 });
 
 
@@ -113,19 +113,19 @@ gulp.task('minifyCSS', function() {
                 return m && m.join('\n') + '\n' || '';
             }
         }))
-        .pipe(gulp.dest('genericeditor-editor/styles'));
+        .pipe(gulp.dest('generic-editor/styles'));
 });
 
 gulp.task('minifyJsBower', function() {
     return gulp.src(bower_components)
         .pipe(concat('external.min.js'))
-        .pipe(gulp.dest('genericeditor-editor/scripts/'));
+        .pipe(gulp.dest('generic-editor/scripts/'));
 });
 
 gulp.task('minifyCssBower', function() {
     return gulp.src(bower_css)
         .pipe(concat('external.min.css'))
-        .pipe(gulp.dest('genericeditor-editor/styles'));
+        .pipe(gulp.dest('generic-editor/styles'));
 });
 
 
@@ -133,61 +133,61 @@ gulp.task('copyfonts', function() {
     return gulp.src(['app/styles/themes/**/*', 'app/styles/webfonts/**/*', 'app/styles/fonts/*'], {
             base: 'app/styles/'
         })
-        .pipe(gulp.dest('genericeditor-editor/styles'));
+        .pipe(gulp.dest('generic-editor/styles'));
 });
 gulp.task('copyfontawsomefonts', function() {
     return gulp.src(['app/bower_components/font-awesome/fonts/fontawesome-webfont.ttf', 'app/bower_components/font-awesome/fonts/fontawesome-webfont.woff'], {
             base: 'app/bower_components/font-awesome/fonts/'
         })
-        .pipe(gulp.dest('genericeditor-editor/styles/fonts'));
+        .pipe(gulp.dest('generic-editor/styles/fonts'));
 });
 gulp.task('copyFiles', function() {
     return gulp.src(['app/images/editor-frame.png', 'app/config/*.json', 'app/index.html'], {
             base: 'app/'
         })
-        .pipe(gulp.dest('genericeditor-editor'));
+        .pipe(gulp.dest('generic-editor'));
 });
 
 gulp.task('copydeploydependencies', function() {
     return gulp.src(['deploy/gulpfile.js', 'deploy/package.json'], {
             base: ''
         })
-        .pipe(gulp.dest('genericeditor-editor'));
+        .pipe(gulp.dest('generic-editor'));
 });
 
 gulp.task('copyPluginFramework', function() {
     return gulp.src(['app/scripts/plugin-framework.min.js'], {
             base: 'app/scripts'
         })
-        .pipe(gulp.dest('genericeditor-editor/scripts'));
+        .pipe(gulp.dest('generic-editor/scripts'));
 });
 
 
 gulp.task('minify', ['minifyCE', 'minifyCSS', 'minifyJsBower', 'minifyCssBower', 'copyfonts', 'copyfontawsomefonts', 'copyFiles', 'copyPluginFramework','copydeploydependencies']);
 
 gulp.task('inject', ['minify'], function() {
-    var target = gulp.src('genericeditor-editor/index.html');
-    var sources = gulp.src(['genericeditor-editor/scripts/external.min.js', 'genericeditor-editor/scripts/genericeditor.min.js', 'genericeditor-editor/styles/*.css'], {
+    var target = gulp.src('generic-editor/index.html');
+    var sources = gulp.src(['generic-editor/scripts/external.min.js', 'generic-editor/scripts/genericeditor.min.js', 'generic-editor/styles/*.css'], {
         read: false
     });
     return target
         .pipe(inject(sources, {
-            ignorePath: 'genericeditor-editor/',
+            ignorePath: 'generic-editor/',
             addRootSlash: false
         }))
-        .pipe(gulp.dest('./genericeditor-editor'));
+        .pipe(gulp.dest('./generic-editor'));
 });
 
 gulp.task('replace', ['inject'], function() {
     return mergeStream([
-        gulp.src(["genericeditor-editor/styles/external.min.css"]).pipe(replace('../fonts', 'fonts')).pipe(gulp.dest('genericeditor-editor/styles')),
-        gulp.src(["genericeditor-editor/scripts/genericeditor.min.js"]).pipe(replace('/plugins', '/content-plugins')).pipe(replace("'https://dev.ekstep.in'", "''")).pipe(replace('dispatcher: "local"', 'dispatcher: "console"')).pipe(gulp.dest('genericeditor-editor/scripts/'))
+        gulp.src(["generic-editor/styles/external.min.css"]).pipe(replace('../fonts', 'fonts')).pipe(gulp.dest('generic-editor/styles')),
+        gulp.src(["generic-editor/scripts/genericeditor.min.js"]).pipe(replace('/plugins', '/content-plugins')).pipe(replace("'https://dev.ekstep.in'", "''")).pipe(replace('dispatcher: "local"', 'dispatcher: "console"')).pipe(gulp.dest('generic-editor/scripts/'))
     ]);
 });
 
 gulp.task('zip', ['minify', 'inject', 'replace', 'packageCorePlugins'], function() {
-    return gulp.src('genericeditor-editor/**')
-        .pipe(zip('genericeditor-editor.zip'))
+    return gulp.src('generic-editor/**')
+        .pipe(zip('generic-editor.zip'))
         .pipe(gulp.dest(''));
 });
 
@@ -256,8 +256,8 @@ gulp.task('packageCorePlugins', ['minify', "minifyCorePlugins"], function() {
     var _ = require('lodash');
     var jsDependencies = [];
     var cssDependencies = [];
-    if (fs.existsSync('genericeditor-editorr/scripts/coreplugins.js')) {
-        fs.unlinkSync('genericeditor-editor/scripts/coreplugins.js');
+    if (fs.existsSync('generic-editor/scripts/coreplugins.js')) {
+        fs.unlinkSync('generic-editor/scripts/coreplugins.js');
     }
     corePlugins.forEach(function(plugin) {
         var manifest = JSON.parse(fs.readFileSync('plugins/' + plugin + '/manifest.json'));
@@ -265,14 +265,14 @@ gulp.task('packageCorePlugins', ['minify', "minifyCorePlugins"], function() {
             manifest.editor.dependencies.forEach(function(dependency) {
                 var resource = '/content-plugins/' + plugin + '/' + dependency.src;
                 if (dependency.type == 'js') {
-                    fs.appendFile('genericeditor-editor/scripts/coreplugins.js', 'org.ekstep.contenteditor.jQuery("body").append($("<script type=\'text/javascript\' src=\'' + resource + '\'>"))' + '\n');
+                    fs.appendFile('generic-editor/scripts/coreplugins.js', 'org.ekstep.contenteditor.jQuery("body").append($("<script type=\'text/javascript\' src=\'' + resource + '\'>"))' + '\n');
                 } else if (dependency.type == 'css') {
-                    fs.appendFile('genericeditor-editor/scripts/coreplugins.js', 'org.ekstep.contenteditor.jQuery("head").append("<link rel=\'stylesheet\' type=\'text/css\' href=\'' + resource + '\'>")' + '\n');
+                    fs.appendFile('generic-editor/scripts/coreplugins.js', 'org.ekstep.contenteditor.jQuery("head").append("<link rel=\'stylesheet\' type=\'text/css\' href=\'' + resource + '\'>")' + '\n');
                 }
             });
         }
         var plugin = fs.readFileSync('plugins/' + plugin + '/editor/plugin.min.js', 'utf8');
-        fs.appendFile('genericeditor-editor/scripts/coreplugins.js', 'org.ekstep.pluginframework.pluginManager.registerPlugin(' + JSON.stringify(manifest) + ',eval(\'' + plugin.replace(/'/g, "\\'") + '\'))' + '\n');
+        fs.appendFile('generic-editor/scripts/coreplugins.js', 'org.ekstep.pluginframework.pluginManager.registerPlugin(' + JSON.stringify(manifest) + ',eval(\'' + plugin.replace(/'/g, "\\'") + '\'))' + '\n');
     });
     return gulp.src('plugins/**/plugin.min.js', {
         read: false
