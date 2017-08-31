@@ -41,7 +41,7 @@ var bower_components = [
     "app/bower_components/oclazyload/dist/modules/ocLazyLoad.loaders.templatesLoader.js",
     "app/bower_components/oclazyload/dist/modules/ocLazyLoad.polyfill.ie8.js",
     "app/bower_components/oclazyload/dist/ocLazyLoad.js",
-    "app/scripts/collectioneditor/md5.js"
+    "app/scripts/genericeditor/md5.js"
 ];
 
 var bower_css = [
@@ -55,13 +55,12 @@ var bower_css = [
 
 var scriptfiles = [
     "app/bower_components/contenteditor/index.js",
-    "app/scripts/collectioneditor/bootstrap-editor.js",
-    "app/scripts/collectioneditor/collectioneditor-config.js",
-    "app/scripts/collectioneditor/collection-editor-api.js",
-    "app/scripts/collectioneditor/collectioneditor-base-plugin.js",
-    "app/scripts/collectioneditor/manager/container-manager.js",
-    "app/scripts/collectioneditor/manager/metapage-manager.js",
-    "app/scripts/collectioneditor/service/collection-service.js",
+    "app/scripts/genericeditor/bootstrap-editor.js",
+    "app/scripts/genericeditor/genericeditor-config.js",
+    "app/scripts/genericeditor/genericeditor-api.js",
+    "app/scripts/genericeditor/genericeditor-base-plugin.js",
+    "app/scripts/genericeditor/manager/container-manager.js",        
+    "app/scripts/genericeditor/manager/canvas-manager.js",
     "app/scripts/angular/controller/main.js",
     "app/scripts/angular/directive/template-compiler-directive.js",
 ];
@@ -85,8 +84,8 @@ gulp.task('setup', function() {
 
 gulp.task('minifyCE', function() {
     return gulp.src(scriptfiles)
-        .pipe(concat('collectioneditor.min.js'))
-        .pipe(gulp.dest('collection-editor/scripts'));
+        .pipe(concat('genericeditor.min.js'))
+        .pipe(gulp.dest('genericeditor-editor/scripts'));
 });
 
 
@@ -114,19 +113,19 @@ gulp.task('minifyCSS', function() {
                 return m && m.join('\n') + '\n' || '';
             }
         }))
-        .pipe(gulp.dest('collection-editor/styles'));
+        .pipe(gulp.dest('genericeditor-editor/styles'));
 });
 
 gulp.task('minifyJsBower', function() {
     return gulp.src(bower_components)
         .pipe(concat('external.min.js'))
-        .pipe(gulp.dest('collection-editor/scripts/'));
+        .pipe(gulp.dest('genericeditor-editor/scripts/'));
 });
 
 gulp.task('minifyCssBower', function() {
     return gulp.src(bower_css)
         .pipe(concat('external.min.css'))
-        .pipe(gulp.dest('collection-editor/styles'));
+        .pipe(gulp.dest('genericeditor-editor/styles'));
 });
 
 
@@ -134,81 +133,74 @@ gulp.task('copyfonts', function() {
     return gulp.src(['app/styles/themes/**/*', 'app/styles/webfonts/**/*', 'app/styles/fonts/*'], {
             base: 'app/styles/'
         })
-        .pipe(gulp.dest('collection-editor/styles'));
+        .pipe(gulp.dest('genericeditor-editor/styles'));
 });
 gulp.task('copyfontawsomefonts', function() {
     return gulp.src(['app/bower_components/font-awesome/fonts/fontawesome-webfont.ttf', 'app/bower_components/font-awesome/fonts/fontawesome-webfont.woff'], {
             base: 'app/bower_components/font-awesome/fonts/'
         })
-        .pipe(gulp.dest('collection-editor/styles/fonts'));
+        .pipe(gulp.dest('genericeditor-editor/styles/fonts'));
 });
 gulp.task('copyFiles', function() {
     return gulp.src(['app/images/editor-frame.png', 'app/config/*.json', 'app/index.html'], {
             base: 'app/'
         })
-        .pipe(gulp.dest('collection-editor'));
+        .pipe(gulp.dest('genericeditor-editor'));
 });
 
 gulp.task('copydeploydependencies', function() {
     return gulp.src(['deploy/gulpfile.js', 'deploy/package.json'], {
             base: ''
         })
-        .pipe(gulp.dest('collection-editor'));
+        .pipe(gulp.dest('genericeditor-editor'));
 });
 
 gulp.task('copyPluginFramework', function() {
     return gulp.src(['app/scripts/plugin-framework.min.js'], {
             base: 'app/scripts'
         })
-        .pipe(gulp.dest('collection-editor/scripts'));
+        .pipe(gulp.dest('genericeditor-editor/scripts'));
 });
 
 
 gulp.task('minify', ['minifyCE', 'minifyCSS', 'minifyJsBower', 'minifyCssBower', 'copyfonts', 'copyfontawsomefonts', 'copyFiles', 'copyPluginFramework','copydeploydependencies']);
 
 gulp.task('inject', ['minify'], function() {
-    var target = gulp.src('collection-editor/index.html');
-    var sources = gulp.src(['collection-editor/scripts/external.min.js', 'collection-editor/scripts/collectioneditor.min.js', 'collection-editor/styles/*.css'], {
+    var target = gulp.src('genericeditor-editor/index.html');
+    var sources = gulp.src(['genericeditor-editor/scripts/external.min.js', 'genericeditor-editor/scripts/genericeditor.min.js', 'genericeditor-editor/styles/*.css'], {
         read: false
     });
     return target
         .pipe(inject(sources, {
-            ignorePath: 'collection-editor/',
+            ignorePath: 'genericeditor-editor/',
             addRootSlash: false
         }))
-        .pipe(gulp.dest('./collection-editor'));
+        .pipe(gulp.dest('./genericeditor-editor'));
 });
 
 gulp.task('replace', ['inject'], function() {
     return mergeStream([
-        gulp.src(["collection-editor/styles/external.min.css"]).pipe(replace('../fonts', 'fonts')).pipe(gulp.dest('collection-editor/styles')),
-        gulp.src(["collection-editor/scripts/collectioneditor.min.js"]).pipe(replace('/plugins', '/content-plugins')).pipe(replace("'https://dev.ekstep.in'", "''")).pipe(replace('dispatcher: "local"', 'dispatcher: "console"')).pipe(gulp.dest('collection-editor/scripts/'))
+        gulp.src(["genericeditor-editor/styles/external.min.css"]).pipe(replace('../fonts', 'fonts')).pipe(gulp.dest('genericeditor-editor/styles')),
+        gulp.src(["genericeditor-editor/scripts/genericeditor.min.js"]).pipe(replace('/plugins', '/content-plugins')).pipe(replace("'https://dev.ekstep.in'", "''")).pipe(replace('dispatcher: "local"', 'dispatcher: "console"')).pipe(gulp.dest('genericeditor-editor/scripts/'))
     ]);
 });
 
 gulp.task('zip', ['minify', 'inject', 'replace', 'packageCorePlugins'], function() {
-    return gulp.src('collection-editor/**')
-        .pipe(zip('collection-editor.zip'))
+    return gulp.src('genericeditor-editor/**')
+        .pipe(zip('genericeditor-editor.zip'))
         .pipe(gulp.dest(''));
 });
 
 gulp.task('build', ['minify','inject', 'replace', 'packageCorePlugins', 'zip']);
 
 var corePlugins = [
-    "org.ekstep.conceptselector-1.0",
-    "org.ekstep.assetbrowser-1.0",
-    "org.ekstep.collectioneditorfunctions-1.0",
-    "org.ekstep.lessonbrowser-1.0",
-    "org.ekstep.textbookmeta-1.0",
-    "org.ekstep.unitmeta-1.0",
-    "org.ekstep.contentmeta-1.0",
-    "org.ekstep.coursemeta-1.0",
-    "org.ekstep.courseunitmeta-1.0",
-    "org.ekstep.lessonplanmeta-1.0",
-    "org.ekstep.lessonplanunitmeta-1.0",
-    "org.ekstep.preview-1.0",
-    "org.ekstep.telemetry-1.0",
-    "org.ekstep.toaster-1.0"   
+    "org.ekstep.genericeditor-1.0",
+    "org.ekstep.contenteditorfunctions-1.0",
+    "org.ekstep.genericeditorheader-1.0",
+    "org.ekstep.genericeditorpreview-1.0",
+    "org.ekstep.genericeditorsidebar-1.0",
+    "org.ekstep.editcontentmeta-1.0",
+    "org.ekstep.uploadcontent-1.0"
 ]
 
 gulp.task('minifyCorePlugins', function() {
@@ -264,8 +256,8 @@ gulp.task('packageCorePlugins', ['minify', "minifyCorePlugins"], function() {
     var _ = require('lodash');
     var jsDependencies = [];
     var cssDependencies = [];
-    if (fs.existsSync('collection-editorr/scripts/coreplugins.js')) {
-        fs.unlinkSync('collection-editor/scripts/coreplugins.js');
+    if (fs.existsSync('genericeditor-editorr/scripts/coreplugins.js')) {
+        fs.unlinkSync('genericeditor-editor/scripts/coreplugins.js');
     }
     corePlugins.forEach(function(plugin) {
         var manifest = JSON.parse(fs.readFileSync('plugins/' + plugin + '/manifest.json'));
@@ -273,14 +265,14 @@ gulp.task('packageCorePlugins', ['minify', "minifyCorePlugins"], function() {
             manifest.editor.dependencies.forEach(function(dependency) {
                 var resource = '/content-plugins/' + plugin + '/' + dependency.src;
                 if (dependency.type == 'js') {
-                    fs.appendFile('collection-editor/scripts/coreplugins.js', 'org.ekstep.contenteditor.jQuery("body").append($("<script type=\'text/javascript\' src=\'' + resource + '\'>"))' + '\n');
+                    fs.appendFile('genericeditor-editor/scripts/coreplugins.js', 'org.ekstep.contenteditor.jQuery("body").append($("<script type=\'text/javascript\' src=\'' + resource + '\'>"))' + '\n');
                 } else if (dependency.type == 'css') {
-                    fs.appendFile('collection-editor/scripts/coreplugins.js', 'org.ekstep.contenteditor.jQuery("head").append("<link rel=\'stylesheet\' type=\'text/css\' href=\'' + resource + '\'>")' + '\n');
+                    fs.appendFile('genericeditor-editor/scripts/coreplugins.js', 'org.ekstep.contenteditor.jQuery("head").append("<link rel=\'stylesheet\' type=\'text/css\' href=\'' + resource + '\'>")' + '\n');
                 }
             });
         }
         var plugin = fs.readFileSync('plugins/' + plugin + '/editor/plugin.min.js', 'utf8');
-        fs.appendFile('collection-editor/scripts/coreplugins.js', 'org.ekstep.pluginframework.pluginManager.registerPlugin(' + JSON.stringify(manifest) + ',eval(\'' + plugin.replace(/'/g, "\\'") + '\'))' + '\n');
+        fs.appendFile('genericeditor-editor/scripts/coreplugins.js', 'org.ekstep.pluginframework.pluginManager.registerPlugin(' + JSON.stringify(manifest) + ',eval(\'' + plugin.replace(/'/g, "\\'") + '\'))' + '\n');
     });
     return gulp.src('plugins/**/plugin.min.js', {
         read: false
