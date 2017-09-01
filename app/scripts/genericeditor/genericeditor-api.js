@@ -60,7 +60,7 @@ window.org.ekstep.genericeditor.api = _.assign(org.ekstep.contenteditor.api, {
     },
 
     getCurrentStage: function() {
-        return '';
+        return {};
     }
 });
 
