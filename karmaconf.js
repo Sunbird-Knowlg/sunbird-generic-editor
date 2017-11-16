@@ -48,7 +48,8 @@ module.exports = function(config) {
             "app/scripts/angular/controller/main.js",
             "app/scripts/angular/directive/template-compiler-directive.js",
             "test/baseSpec.js",
-            'test/**/*.js',
+            'test/scripts/*.js',
+            'test/scripts/**/*.js',
             { pattern: 'plugins/org.ekstep.genericeditor-1.0/**/*.json', watched: true, served: true, included: false },
             // fixtures
             //{ pattern: 'test/**/*.json', watched: true, served: true, included: false },
@@ -66,7 +67,10 @@ module.exports = function(config) {
 
 
         // list of files to exclude
-        exclude: [],
+        exclude: [
+            'app/scripts/genericeditor/genericeditor-base-plugin.js',
+            'app/scripts/genericeditor/md5.js',
+        ],
 
         client: {
             captureConsole: false

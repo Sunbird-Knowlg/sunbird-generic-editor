@@ -11,5 +11,6 @@ window.context = {
 window.config = {
     baseURL: "",
     previewURL: "/preview/preview.html",
-    apislug: "/action"
+    apislug: "/action",
+    dispatcher: "local"
 }
