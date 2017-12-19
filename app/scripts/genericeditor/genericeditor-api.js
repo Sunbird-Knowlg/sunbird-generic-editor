@@ -6,16 +6,7 @@ window.org.ekstep.genericeditor.api = _.assign(org.ekstep.contenteditor.api, {
             { "id": "org.ekstep.genericeditorsidebar", "ver": "1.0", "type": "plugin" }];
         gcPlugins = _.concat(gcPlugins, ecEditor.getConfig('genericeditorPlugins'));     
         org.ekstep.pluginframework.pluginManager.loadAllPlugins(gcPlugins, undefined, function () {
-            org.ekstep.services.telemetryService.initialize({
-                uid: ecEditor.getContext('uid'),
-                sid: ecEditor.getContext('sid'),
-                content_id: ecEditor.getContext('contentId'),
-                etags: ecEditor.getContext('etags') || {},
-                channel: ecEditor.getContext('channel')  || "",
-                pdata: ecEditor.getContext('pdata') || {}
-            }, ecEditor.getConfig('dispatcher'));
-            //org.ekstep.services.telemetryService.startEvent(true).append("loadtimes", { plugins: (Date.now() - startTime) });        
-            org.ekstep.services.telemetryService.startEvent(true).duration((new Date()).getTime() - startTime);
+            org.ekstep.services.telemetryService.start((new Date()).getTime() - startTime);
             if (cb) cb();    
         });        
     },
