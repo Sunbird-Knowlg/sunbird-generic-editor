@@ -2,7 +2,7 @@ window.org.ekstep.genericeditor.api = _.assign(org.ekstep.contenteditor.api, {
     initEditor: function(config, cb) {
         var startTime = Date.now();   
         var gcPlugins = [
-            { "id": "org.ekstep.genericeditorpreview", "ver": "1.0", "type": "plugin" },        
+            { "id": "org.ekstep.genericeditorpreview", "ver": "1.1", "type": "plugin" },        
             { "id": "org.ekstep.genericeditorsidebar", "ver": "1.0", "type": "plugin" }];
         gcPlugins = _.concat(gcPlugins, ecEditor.getConfig('genericeditorPlugins'));     
         org.ekstep.pluginframework.pluginManager.loadAllPlugins(gcPlugins, undefined, function () {
