@@ -5,7 +5,8 @@ window.context = {
         "id": "390",
         "name": "Sunil A S",
         "email": "sunils@ilimi.in"
-    }
+    },
+    "framework": "NCF"
 };
 
 window.config = {
