@@ -58,7 +58,7 @@ angular.module('editorApp').controller('MainCtrl', ['$scope', '$ocLazyLoad', '$l
 
         config.genericeditorPlugins = config.plugins || org.ekstep.contenteditor.config.plugins;
         config.plugins = [        
-            { "id": "org.ekstep.genericeditor", "ver": "1.0", "type": "plugin" }
+            { "id": "org.ekstep.genericeditor", "ver": "1.1", "type": "plugin" }
         ]
         org.ekstep.contenteditor.init(context, config, $scope, undefined, function() {
             $scope.contentService = org.ekstep.contenteditor.api.getService(ServiceConstants.CONTENT_SERVICE);            
