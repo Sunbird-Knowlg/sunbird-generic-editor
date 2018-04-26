@@ -196,7 +196,7 @@ gulp.task('zip', ['minify', 'inject', 'replace', 'packageCorePlugins'], function
 gulp.task('build', ['minify','inject', 'replace', 'packageCorePlugins', 'zip']);
 
 var corePlugins = [
-    "org.ekstep.conceptselector-1.0",
+    "org.ekstep.conceptselector-1.1",
     "org.ekstep.assetbrowser-1.2",
     "org.ekstep.uploadcontent-1.0",
     "org.ekstep.contenteditorfunctions-1.3"
