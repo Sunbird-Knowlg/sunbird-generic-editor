@@ -199,7 +199,7 @@ var corePlugins = [
     "org.ekstep.conceptselector-1.1",
     "org.ekstep.assetbrowser-1.2",
     "org.ekstep.uploadcontent-1.0",
-    "org.ekstep.contenteditorfunctions-1.3"
+    "org.ekstep.contenteditorfunctions-1.2"
 ]
 
 gulp.task('minifyCorePlugins', function() {
