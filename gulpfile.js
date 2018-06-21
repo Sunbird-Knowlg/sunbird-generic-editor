@@ -203,7 +203,7 @@ gulp.task('inject', ['minify'], function() {
 gulp.task('replace', ['inject'], function() {
     return mergeStream([
         gulp.src(["generic-editor/styles/external.*.css"]).pipe(replace('../fonts', 'fonts')).pipe(gulp.dest('generic-editor/styles')),
-        gulp.src(["generic-editor/scripts/genericeditor.*.js"]).pipe(replace('/plugins', '/content-plugins')).pipe(replace("'https://dev.ekstep.in'", "''")).pipe(replace('dispatcher: "local"', 'dispatcher: "console"')).pipe(gulp.dest('generic-editor/scripts/'))
+        gulp.src(["generic-editor/scripts/genericeditor.*.js"]).pipe(replace('/plugins', '/content-plugins')).pipe(replace("https://dev.ekstep.in", "")).pipe(replace('dispatcher: "local"', 'dispatcher: "console"')).pipe(gulp.dest('generic-editor/scripts/'))
     ]);
 });
 
