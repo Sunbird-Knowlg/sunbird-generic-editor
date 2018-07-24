@@ -31,7 +31,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const VENDOR = [
     "./app/libs/please-wait.min.js",
     "./app/bower_components/jquery/dist/jquery.min.js",
-    "./app/bower_components/async/dist/async.min.js",
+    "./app/bower_components/semantic/dist/semantic.min.js",
     "./app/libs/semantic.min.js",
     "./app/bower_components/angular/angular.min.js",
     "./app/bower_components/lodash/dist/lodash.min.js",
@@ -93,8 +93,10 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'angular': path.resolve('./app/bower_components/angular/angular.js'),
-            'Fingerprint2': path.resolve('./app/bower_components/fingerprintjs2/dist/fingerprint2.min.js'),
+            'angular': path.resolve(`${BASE_PATH}app/bower_components/angular/angular.js`),
+            'Fingerprint2': path.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/dist/fingerprint2.min.js`),
+            'async': path.resolve(`${BASE_PATH}app/bower_components/async/dist/async.min.js`),
+            'EventBus': path.resolve(`${BASE_PATH}app/libs/eventbus.min.js`)
         }
     },
     module: {
@@ -106,37 +108,36 @@ module.exports = {
                     strict: true
                 }
             },
-
             {
-                test: require.resolve('./app/bower_components/async/dist/async.min.js'),
+                test: require.resolve(`${BASE_PATH}app/bower_components/jquery/dist/jquery.min.js`),
                 use: [{
                     loader: 'expose-loader',
-                    options: 'async'
+                    options: 'jQuery'
                 }]
             },
-            // {
-            //     test: require.resolve('./node_modules/ajv/dist/ajv.min.js'),
-            //     use: [{
-            //         loader: 'expose-loader',
-            //         options: 'ajv'
-            //     }]
-            // },
             {
-                test: require.resolve('./app/libs/eventbus.min.js'),
+                test: require.resolve(`${BASE_PATH}app/bower_components/jquery/dist/jquery.min.js`),
+                use: [{
+                    loader: 'expose-loader',
+                    options: '$'
+                }]
+            },
+            {
+                test: require.resolve(`${BASE_PATH}app/libs/eventbus.min.js`),
                 use: [{
                     loader: 'expose-loader',
                     options: 'EventBus'
                 }]
             },
             {
-                test: require.resolve('./app/libs/please-wait.min.js'),
+                test: require.resolve(`${BASE_PATH}app/libs/please-wait.min.js`),
                 use: [{
                     loader: 'expose-loader',
                     options: 'pleaseWait'
                 }]
             },
             {
-                test: require.resolve('./app/bower_components/uuid/index.js'),
+                test: require.resolve(`${BASE_PATH}app/bower_components/uuid/index.js`),
                 use: [{
                     loader: 'expose-loader',
                     options: 'UUID'
@@ -150,7 +151,7 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             sourceMap: false,
-                            minimize: true,
+                            minimize: false,
                             "preset": "advanced",
                             discardComments: {
                                 removeAll: true
@@ -189,38 +190,38 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['dist']),
-        // new UglifyJsPlugin({
-        //     cache: false,
-        //     parallel: true,
-        //     uglifyOptions: {
-        //         compress: {
-        //             dead_code: true,
-        //             drop_console: false,
-        //             global_defs: {
-        //                 DEBUG: true
-        //             },
-        //             passes: 1,
-        //         },
-        //         ecma: 5,
-        //         mangle: true
-        //     },
-        //     sourceMap: true
-        // }),
+        new UglifyJsPlugin({
+            cache: false,
+            parallel: true,
+            uglifyOptions: {
+                compress: {
+                    dead_code: true,
+                    drop_console: false,
+                    global_defs: {
+                        DEBUG: true
+                    },
+                    passes: 1,
+                },
+                ecma: 5,
+                mangle: true
+            },
+            sourceMap: true
+        }),
         // copy the index.html and templated to eidtor filder
-        // new CopyWebpackPlugin([{
-        //         from: './app/index.html',
-        //         to: './[name].[ext]',
-        //         toType: 'template'
-        //     },
-        //     {
-        //         from: './deploy/gulpfile.js',
-        //         to: './'
-        //     },
-        //     {
-        //         from: './deploy/package.json',
-        //         to: './'
-        //     }
-        // ]),
+        new CopyWebpackPlugin([{
+                from: './app/index.html',
+                to: './[name].[ext]',
+                toType: 'template'
+            },
+            {
+                from: './deploy/gulpfile.js',
+                to: './'
+            },
+            {
+                from: './deploy/package.json',
+                to: './'
+            }
+        ]),
         new ImageminPlugin({
             test: /\.(jpe?g|png|gif|svg)$/i,
             name: '[name].[ext]',
@@ -234,11 +235,8 @@ module.exports = {
         }),
         new webpack.ProvidePlugin({
             Fingerprint2: 'Fingerprint2',
-            Ajv: 'ajv',
-            //Ajv: path.resolve("./node_modules/ajv/dist/ajv.min.js"),
-            $: "jquery",
-            jQuery: "jquery",
-            async: 'async'
+            "window.async": 'async',
+            EventBus: "EventBus"
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
