@@ -13,6 +13,7 @@
         "xmlbuilder": "*"
     },
     "devDependencies": {
+        "ajv": "^6.5.2",
         "bluebird": "^3.4.6",
         "grunt": ">=0.4.0 <1.0.0",
         "grunt-aws-s3": "^0.14.5",
@@ -54,7 +55,6 @@
         "html-minifier": "*",
         "html-minifier-loader": "*",
         "html-webpack-plugin": "^3.2.0",
-        "image-webpack-loader": "^4.3.1",
         "imagemin-webpack-plugin": "^2.1.5",
         "imports-loader": "*",
         "jasmine": "2.5.2",
@@ -77,22 +77,15 @@
         "postcss-cli": "*",
         "purify-css": "*",
         "purifycss-webpack": "*",
-        "sass-loader": "^7.0.3",
         "string-replace-loader": "2.1",
         "svg-inline-loader": "*",
-        "uglify-es": "*",
-        "uglify-js": "^3.4.4",
-        "uglifyjs": "^2.4.11",
-        "uglifyjs-webpack-plugin": "*",
+        "uglifyjs-webpack-plugin": "1.2.7",
         "url-loader": "^1.0.1",
-        "webfontloader": "1.6",
         "webpack": "^4.14.0",
-        "webpack-clear-console": "*",
         "webpack-cli": "^2.1.5",
-        "webpack-entry-plus": "^1.0.12",
-        "webpack-merge-and-include-globally": "*",
-        "webpack-runtime-public-path-plugin": "*",
-        "zip-webpack-plugin": "^3.0.0"
+        "zip-webpack-plugin": "^3.0.0",
+        "clean-webpack-plugin": "^0.1.19",
+        "expose-loader": "^0.7.5"
     },
     "scripts": {
         "build": "webpack",

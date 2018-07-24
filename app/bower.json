@@ -7,6 +7,7 @@
         "bootstrap": "^3.2.0",
         "font-awesome": "~4.5.0",
         "fabric": "1.7.3",
+        "fingerprintjs2": "^1.5.1",
         "lodash": "~4.0.0",
         "x2js": "./libs/xml2json.js",
         "eventbus": "./libs/eventbus.min.js",

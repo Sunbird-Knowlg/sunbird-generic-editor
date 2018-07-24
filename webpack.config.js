@@ -1,8 +1,8 @@
 //TODO: Remove the unused constants
 
 const ENVIRONMENT = process.env.NODE_ENV;
-const BUILD_NUMBER = process.env.build_number;
-const EDITOR_VER = process.env.version_number;
+const BUILD_NUMBER = process.env.build_number || 1;
+const EDITOR_VER = process.env.version_number || 1;
 
 const CONFIG_STRING_REPLACE = [
     { search: '/plugins', replace: '/content-plugins' },
@@ -58,14 +58,19 @@ var EDITOR_APP = [
     "./app/scripts/angular/directive/template-compiler-directive.js",
 ];
 const APP_STYLE = [
+    "./app/styles/semantic.min.css",
+    "./app/styles/content-editor.css",
+    "./app/styles/MyFontsWebfontsKit.css",
     "./app/bower_components/font-awesome/css/font-awesome.min.css",
     "./app/bower_components/ng-dialog/css/ngDialog.min.css",
     "./app/bower_components/ng-dialog/css/ngDialog-theme-plain.min.css",
     "./app/bower_components/ng-dialog/css/ngDialog-theme-default.min.css",
+    "./app/bower_components/izitoast/dist/css/iziToast.min.css",
+    "./app/styles/iconfont.css",
+    "./app/styles/noto.css",
     "./app/libs/spinkit.css",
     "./app/libs/please-wait.css",
     "./app/libs/ng-tags-input.css"
-
 ];
 
 // removing the duplicate files
@@ -88,7 +93,6 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'jquery-ui/ui/widgets/menu': path.resolve('./app/bower_components/jquery-ui/ui/widgets/menu.js'),
             'angular': path.resolve('./app/bower_components/angular/angular.js'),
             'Fingerprint2': path.resolve('./app/bower_components/fingerprintjs2/dist/fingerprint2.min.js'),
         }
@@ -110,6 +114,13 @@ module.exports = {
                     options: 'async'
                 }]
             },
+            // {
+            //     test: require.resolve('./node_modules/ajv/dist/ajv.min.js'),
+            //     use: [{
+            //         loader: 'expose-loader',
+            //         options: 'ajv'
+            //     }]
+            // },
             {
                 test: require.resolve('./app/libs/eventbus.min.js'),
                 use: [{
@@ -178,59 +189,38 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['dist']),
-        new UglifyJsPlugin({
-            cache: false,
-            parallel: true,
-            uglifyOptions: {
-                compress: {
-                    dead_code: true,
-                    drop_console: false,
-                    global_defs: {
-                        DEBUG: true
-                    },
-                    passes: 1,
-                },
-                ecma: 5,
-                mangle: true
-            },
-            sourceMap: true
-        }),
+        // new UglifyJsPlugin({
+        //     cache: false,
+        //     parallel: true,
+        //     uglifyOptions: {
+        //         compress: {
+        //             dead_code: true,
+        //             drop_console: false,
+        //             global_defs: {
+        //                 DEBUG: true
+        //             },
+        //             passes: 1,
+        //         },
+        //         ecma: 5,
+        //         mangle: true
+        //     },
+        //     sourceMap: true
+        // }),
         // copy the index.html and templated to eidtor filder
-        new CopyWebpackPlugin([{
-                from: './app/index.html',
-                to: './[name].[ext]',
-                toType: 'template'
-            },
-            {
-                from: './app/bower_components/jquery/dist/jquery.min.js',
-                to: './'
-            },
-            {
-                from: './app/scripts/coreplugins.js',
-                to: './'
-            },
-            {
-                from: './deploy/gulpfile.js',
-                to: './'
-            },
-            {
-                from: './deploy/package.json',
-                to: './'
-            },
-            {
-                from: './app/libs/jquery-ui.min.js',
-                to: './'
-            },
-            {
-                from: './app/libs/semantic.min.js',
-                to: './'
-            },
-            {
-                from: './app/libs/contextmenu.min.js',
-                to: './'
-            },
-
-        ]),
+        // new CopyWebpackPlugin([{
+        //         from: './app/index.html',
+        //         to: './[name].[ext]',
+        //         toType: 'template'
+        //     },
+        //     {
+        //         from: './deploy/gulpfile.js',
+        //         to: './'
+        //     },
+        //     {
+        //         from: './deploy/package.json',
+        //         to: './'
+        //     }
+        // ]),
         new ImageminPlugin({
             test: /\.(jpe?g|png|gif|svg)$/i,
             name: '[name].[ext]',
@@ -245,6 +235,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             Fingerprint2: 'Fingerprint2',
             Ajv: 'ajv',
+            //Ajv: path.resolve("./node_modules/ajv/dist/ajv.min.js"),
             $: "jquery",
             jQuery: "jquery",
             async: 'async'
@@ -310,5 +301,4 @@ module.exports = {
             },
         }
     }
-
 };
