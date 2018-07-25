@@ -141,6 +141,20 @@ module.exports = {
                 }]
             },
             {
+                test: require.resolve('./app/bower_components/async/dist/async.min.js'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: 'async'
+                }]
+            },
+            {
+                test: require.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/dist/fingerprint2.min.js`),
+                use: [{
+                    loader: 'expose-loader',
+                    options: 'Fingerprint2'
+                }]
+            },
+            {
                 test: require.resolve(`${BASE_PATH}app/bower_components/uuid/index.js`),
                 use: [{
                     loader: 'expose-loader',
@@ -244,6 +258,7 @@ module.exports = {
         }),
         new webpack.ProvidePlugin({
             Fingerprint2: 'Fingerprint2',
+            async: 'async',
             "window.async": 'async',
             EventBus: "EventBus"
         }),
