@@ -1,4 +1,7 @@
-//TODO: Remove the unused constants
+/**
+ * @description Webpack config file to minify the generic editor script, style files 
+ * @version webpack 4
+ */
 
 const ENVIRONMENT = process.env.NODE_ENV;
 const BUILD_NUMBER = process.env.build_number || 1;
@@ -12,7 +15,7 @@ const CONFIG_STRING_REPLACE = [
 
 const BASE_PATH = './'
 
-const BUILD_FOLDER_NAME = 'generic-editor.zip';
+const BUILD_FOLDER_NAME = 'generic-editor.zip'; // Generated build folder name
 
 const path = require('path');
 const webpack = require('webpack');
@@ -57,6 +60,7 @@ var EDITOR_APP = [
     "./app/scripts/angular/controller/main.js",
     "./app/scripts/angular/directive/template-compiler-directive.js",
 ];
+
 const APP_STYLE = [
     "./app/styles/semantic.min.css",
     "./app/styles/content-editor.css",
@@ -220,7 +224,12 @@ module.exports = {
             {
                 from: './deploy/package.json',
                 to: './'
-            }
+            },
+            {
+                from: './generic-editor/scripts/coreplugins.js',
+                to: './',
+                flatten: true
+            },
         ]),
         new ImageminPlugin({
             test: /\.(jpe?g|png|gif|svg)$/i,
