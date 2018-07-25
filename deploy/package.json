@@ -1,6 +1,6 @@
 {
     "name": "generic-editor",
-    "version": "3.5.0",
+    "version": "3.7.0",
     "description": "It is used to update files in deployment job",
     "main": "gulpfile.js",
     "scripts": {
@@ -8,8 +8,7 @@
     },
     "author": "Kartheek Palla",
     "license": "ISC",
-    "dependencies": {
-    },
+    "dependencies": {},
     "devDependencies": {
         "gulp": "^3.9.1",
         "gulp-zip": "^3.2.0",
