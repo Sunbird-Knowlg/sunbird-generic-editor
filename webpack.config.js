@@ -34,7 +34,6 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const VENDOR = [
     "./app/libs/please-wait.min.js",
     "./app/bower_components/jquery/dist/jquery.min.js",
-    "./app/bower_components/semantic/dist/semantic.min.js",
     "./app/libs/semantic.min.js",
     "./app/bower_components/angular/angular.min.js",
     "./app/bower_components/lodash/dist/lodash.min.js",
