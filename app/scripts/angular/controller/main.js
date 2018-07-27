@@ -46,7 +46,7 @@ angular.module('editorApp').controller('popupController', ['ngDialog', '$ocLazyL
 }]);
 angular.module('editorApp').controller('MainCtrl', ['$scope', '$ocLazyLoad', '$location',
     function($scope, $ocLazyLoad, $location) {
-        $scope.loadNgModules = function(templatePath, controllerPath, allowTemplateCache) {
+        $scope.loadNgModules = function(templatePath, controllerPath) {
             var files = [];
             if (templatePath) files.push({ type: 'html', path: templatePath });
             if (controllerPath) files.push({ type: 'js', path: controllerPath + '?' + ecEditor.getConfig('build_number') });
