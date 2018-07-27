@@ -4,11 +4,11 @@
  */
 
 const ENVIRONMENT = process.env.NODE_ENV;
-const BUILD_NUMBER = process.env.build_number || 1;
-const EDITOR_VER = process.env.version_number || 1;
+const BUILD_NUMBER = process.env.build_number;
+const EDITOR_VER = process.env.version_number;
 
 const CONFIG_STRING_REPLACE = [
-    //{ search: '/plugins', replace: '/content-plugins' },
+    { search: '/plugins', replace: '/content-plugins' },
     { search: "/api", replace: '/action' },
     { search: 'https://dev.ekstep.in', replace: '' }
 ];
@@ -73,7 +73,8 @@ const APP_STYLE = [
     "./app/styles/noto.css",
     "./app/libs/spinkit.css",
     "./app/libs/please-wait.css",
-    "./app/libs/ng-tags-input.css"
+    "./app/libs/ng-tags-input.css",
+    "./app/scripts/plugin-vendor.min.css" // Plugins css files (Which is generated while packaging coreplugins  from webpack.plugin.config.js)
 ];
 
 // removing the duplicate files
@@ -91,7 +92,7 @@ module.exports = {
         'style': APP_STYLE,
     },
     output: {
-        filename: `[name].js`,
+        filename: `[name].min.${VERSION}.js`,
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
@@ -147,13 +148,6 @@ module.exports = {
                 }]
             },
             {
-                test: require.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/dist/fingerprint2.min.js`),
-                use: [{
-                    loader: 'expose-loader',
-                    options: 'Fingerprint2'
-                }]
-            },
-            {
                 test: /\.(html)$/,
                 use: {
                     loader: 'html-loader',
@@ -161,6 +155,13 @@ module.exports = {
                         attrs: [':data-src']
                     }
                 }
+            },
+            {
+                test: require.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/dist/fingerprint2.min.js`),
+                use: [{
+                    loader: 'expose-loader',
+                    options: 'Fingerprint2'
+                }]
             },
             {
                 test: require.resolve(`${BASE_PATH}app/bower_components/uuid/index.js`),

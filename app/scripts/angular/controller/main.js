@@ -32,15 +32,6 @@ angular.module('editorApp').controller('popupController', ['ngDialog', '$ocLazyL
                 angular.forEach(angular.element(templatePath), function(node) {
                     if (node.nodeName === "SCRIPT" && node.type === "text/ng-template") {
                         $templateCache.put(node.id, node.innerHTML);
-                        // angular.forEach(node.innerHTML, function(innerNode) {
-                        //     console.log("InnerNode", innerNode.type)
-                        //     if (innerNode.type === "text/ng-template") {
-                        //         $templateCache.put(innerNode.id, innerNode.innerHTML);
-                        //     } else {
-                        //         $templateCache.put(node.id, node.innerHTML);
-                        //     }
-                        // })
-
                     }
                 });
             }
@@ -55,16 +46,13 @@ angular.module('editorApp').controller('popupController', ['ngDialog', '$ocLazyL
 }]);
 angular.module('editorApp').controller('MainCtrl', ['$scope', '$ocLazyLoad', '$location',
     function($scope, $ocLazyLoad, $location) {
-
         $scope.loadNgModules = function(templatePath, controllerPath, allowTemplateCache) {
-
             var files = [];
             if (templatePath) files.push({ type: 'html', path: templatePath });
             if (controllerPath) files.push({ type: 'js', path: controllerPath + '?' + ecEditor.getConfig('build_number') });
             if (files.length) return $ocLazyLoad.load(files)
 
         };
-
         org.ekstep.contenteditor.containerManager.initialize({ loadNgModules: $scope.loadNgModules, scope: $scope });
 
         // container scope starts
