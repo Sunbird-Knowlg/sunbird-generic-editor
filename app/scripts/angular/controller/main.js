@@ -5,7 +5,7 @@
 
 angular.module('editorApp', ['ngDialog', 'oc.lazyLoad', 'Scope.safeApply']).factory('cacheBustInterceptor', ['$templateCache', function($templateCache) {
     return {
-        request : function(config) {
+        request: function(config) {
             config.alreadyCached = $templateCache.get(config.url);
             if (!config.alreadyCached) {
                 config.url = config.url + '?' + ecEditor.getConfig('build_number');
@@ -20,12 +20,31 @@ angular.module('editorApp', ['ngDialog', 'oc.lazyLoad', 'Scope.safeApply']).fact
     });
     $httpProvider.interceptors.push('cacheBustInterceptor');
 }]);
-angular.module('editorApp').controller('popupController', ['ngDialog', '$ocLazyLoad', function(ngDialog, $ocLazyLoad) {
-    function loadNgModules(templatePath, controllerPath) {
-        return $ocLazyLoad.load([
-            { type: 'html', path: templatePath },
-            { type: 'js', path: controllerPath + '?' + ecEditor.getConfig('build_number')}
-        ]);
+angular.module('editorApp').controller('popupController', ['ngDialog', '$ocLazyLoad', '$templateCache', function(ngDialog, $ocLazyLoad, $templateCache) {
+    function loadNgModules(templatePath, controllerPath, allowTemplateCache) {
+        if (!allowTemplateCache) {
+            return $ocLazyLoad.load([
+                { type: 'html', path: templatePath },
+                { type: 'js', path: controllerPath + '?' + ecEditor.getConfig('build_number') }
+            ]);
+        } else {
+            if (angular.isString(templatePath) && templatePath.length > 0) {
+                angular.forEach(angular.element(templatePath), function(node) {
+                    if (node.nodeName === "SCRIPT" && node.type === "text/ng-template") {
+                        $templateCache.put(node.id, node.innerHTML);
+                        // angular.forEach(node.innerHTML, function(innerNode) {
+                        //     console.log("InnerNode", innerNode.type)
+                        //     if (innerNode.type === "text/ng-template") {
+                        //         $templateCache.put(innerNode.id, innerNode.innerHTML);
+                        //     } else {
+                        //         $templateCache.put(node.id, node.innerHTML);
+                        //     }
+                        // })
+
+                    }
+                });
+            }
+        }
     };
 
     function openModal(config, callback) {
@@ -35,24 +54,26 @@ angular.module('editorApp').controller('popupController', ['ngDialog', '$ocLazyL
     org.ekstep.contenteditor.api.getService('popup').initService(loadNgModules, openModal);
 }]);
 angular.module('editorApp').controller('MainCtrl', ['$scope', '$ocLazyLoad', '$location',
-    function($scope, $ocLazyLoad, $location) { 
+    function($scope, $ocLazyLoad, $location) {
 
-        $scope.loadNgModules = function(templatePath, controllerPath) {
+        $scope.loadNgModules = function(templatePath, controllerPath, allowTemplateCache) {
+
             var files = [];
             if (templatePath) files.push({ type: 'html', path: templatePath });
             if (controllerPath) files.push({ type: 'js', path: controllerPath + '?' + ecEditor.getConfig('build_number') });
             if (files.length) return $ocLazyLoad.load(files)
-        };  
 
-        org.ekstep.contenteditor.containerManager.initialize({loadNgModules: $scope.loadNgModules, scope: $scope });        
+        };
+
+        org.ekstep.contenteditor.containerManager.initialize({ loadNgModules: $scope.loadNgModules, scope: $scope });
 
         // container scope starts
         $scope.editorContainer = undefined;
         $scope.addToContainer = function(container) {
-            $scope.editorContainer = container;
-            $scope.$safeApply();            
-        }
-        // container scope ends
+                $scope.editorContainer = container;
+                $scope.$safeApply();
+            }
+            // container scope ends
 
         document.title = 'Generic-Editor';
 
@@ -63,17 +84,17 @@ angular.module('editorApp').controller('MainCtrl', ['$scope', '$ocLazyLoad', '$l
         context.etags.app = context.app || context.etags.app || [];
         context.etags.partner = context.partner || context.etags.partner || [];
         context.etags.dims = context.dims || context.etags.dims || [];
-        
+
         var config = org.ekstep.contenteditor.getWindowConfig();
         config.absURL = $location.protocol() + '://' + $location.host() + ':' + $location.port() // Required
 
         config.genericeditorPlugins = config.plugins || org.ekstep.contenteditor.config.plugins;
-        config.plugins = [        
+        config.plugins = [
             { "id": "org.ekstep.genericeditor", "ver": "1.1", "type": "plugin" }
         ]
         org.ekstep.contenteditor.init(context, config, $scope, undefined, function() {
-            $scope.contentService = org.ekstep.contenteditor.api.getService(ServiceConstants.CONTENT_SERVICE);            
-            $scope.popupService = org.ekstep.contenteditor.api.getService(ServiceConstants.POPUP_SERVICE);            
-        });           
+            $scope.contentService = org.ekstep.contenteditor.api.getService(ServiceConstants.CONTENT_SERVICE);
+            $scope.popupService = org.ekstep.contenteditor.api.getService(ServiceConstants.POPUP_SERVICE);
+        });
     }
 ]);

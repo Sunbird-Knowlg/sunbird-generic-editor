@@ -79,6 +79,7 @@
     },
     "scripts": {
         "build": "webpack",
+        "plugin-build": "webpack --config webpack.plugin.config.js",
         "test": "karma start karmaconf.js"
     },
     "repository": {

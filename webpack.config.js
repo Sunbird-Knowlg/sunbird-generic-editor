@@ -4,11 +4,11 @@
  */
 
 const ENVIRONMENT = process.env.NODE_ENV;
-const BUILD_NUMBER = process.env.build_number;
-const EDITOR_VER = process.env.version_number;
+const BUILD_NUMBER = process.env.build_number || 1;
+const EDITOR_VER = process.env.version_number || 1;
 
 const CONFIG_STRING_REPLACE = [
-    { search: '/plugins', replace: '/content-plugins' },
+    //{ search: '/plugins', replace: '/content-plugins' },
     { search: "/api", replace: '/action' },
     { search: 'https://dev.ekstep.in', replace: '' }
 ];
@@ -91,7 +91,7 @@ module.exports = {
         'style': APP_STYLE,
     },
     output: {
-        filename: `[name].min.${VERSION}.js`,
+        filename: `[name].js`,
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
@@ -152,6 +152,15 @@ module.exports = {
                     loader: 'expose-loader',
                     options: 'Fingerprint2'
                 }]
+            },
+            {
+                test: /\.(html)$/,
+                use: {
+                    loader: 'html-loader',
+                    options: {
+                        attrs: [':data-src']
+                    }
+                }
             },
             {
                 test: require.resolve(`${BASE_PATH}app/bower_components/uuid/index.js`),
