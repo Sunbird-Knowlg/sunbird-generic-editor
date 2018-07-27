@@ -14,8 +14,8 @@ var merge = require('merge-stream');
 var replace = require('gulp-string-replace');
 const zip = require('gulp-zip');
 var uglify = require('gulp-uglify');
-var versionNumber = process.env.version_number || 1;
-var buildNumber = process.env.build_number || 1;
+var versionNumber = process.env.version_number;
+var buildNumber = process.env.build_number;
 
 if (!versionNumber && !versionNumber) {
     console.error('Error!!! Cannot find verion_number and build_number env variables');
