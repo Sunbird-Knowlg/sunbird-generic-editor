@@ -113,11 +113,20 @@ module.exports = {
             'clipboard': path.resolve('./node_modules/clipboard/dist/clipboard.min.js'),
             'E2EConverter': path.resolve('./plugins/org.ekstep.viewecml-1.0/editor/libs/src/converter.js'),
             'qq': path.resolve('./node_modules/xmlbuilder/lib/index.js'),
-            'X2JS': path.resolve('./plugins/org.ekstep.assessmentbrowser-1.1/editor/libs/xml2json.js')
+            'X2JS': path.resolve('./plugins/org.ekstep.assessmentbrowser-1.1/editor/libs/xml2json.js'),
+            'iziToast': path.resolve('./app/bower_components/izitoast/dist/js/iziToast.min.js'),
+
         }
     },
     module: {
-        rules: [{
+        rules: [
+            {
+                test: require.resolve('./app/bower_components/izitoast/dist/js/iziToast.min.js'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: 'iziToast'
+                }]
+            },{
                 test: /\.(html)$/,
                 use: {
                     loader: 'html-loader',
@@ -172,6 +181,9 @@ module.exports = {
     plugins: [
         new MiniCssExtractPlugin({
             filename: "[name].min.css",
+        }),
+        new webpack.ProvidePlugin({
+            iziToast: 'iziToast'
         }),
         new UglifyJsPlugin({
             cache: false,
