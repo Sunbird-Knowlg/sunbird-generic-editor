@@ -104,7 +104,7 @@ module.exports = {
 
     output: {
         filename: '[name]',
-        path: path.resolve(__dirname, './app/scripts'),
+        path: path.resolve(__dirname, './generic-editor/scripts'),
     },
     resolve: {
         alias: {
