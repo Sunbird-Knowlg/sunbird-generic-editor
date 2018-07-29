@@ -17,7 +17,7 @@ var uglify = require('gulp-uglify');
 var versionNumber = process.env.version_number;
 var buildNumber = process.env.build_number;
 
-if(!versionNumber && !versionNumber) {
+if (!versionNumber && !versionNumber) {
     console.error('Error!!! Cannot find verion_number and build_number env variables');
     return process.exit(1);
 }
@@ -60,7 +60,7 @@ var scriptfiles = [
     "app/scripts/genericeditor/genericeditor-config.js",
     "app/scripts/genericeditor/genericeditor-api.js",
     "app/scripts/genericeditor/genericeditor-base-plugin.js",
-    "app/scripts/genericeditor/manager/container-manager.js",        
+    "app/scripts/genericeditor/manager/container-manager.js",
     "app/scripts/genericeditor/manager/canvas-manager.js",
     "app/scripts/angular/controller/main.js",
     "app/scripts/angular/directive/template-compiler-directive.js",
@@ -185,7 +185,7 @@ gulp.task('copydeploydependencies', function() {
         .pipe(gulp.dest('generic-editor'));
 });
 
-gulp.task('minify', ['minifyCE', 'minifyCSS', 'minifyJsBower', 'minifyCssBower', 'copycommonfonts', 'copyfontawesomefonts', 'copyFiles','copydeploydependencies']);
+gulp.task('minify', ['minifyCE', 'minifyCSS', 'minifyJsBower', 'minifyCssBower', 'copycommonfonts', 'copyfontawesomefonts', 'copyFiles', 'copydeploydependencies']);
 
 gulp.task('inject', ['minify'], function() {
     var target = gulp.src('generic-editor/index.html');
@@ -213,13 +213,10 @@ gulp.task('zip', ['minify', 'inject', 'replace', 'packageCorePlugins'], function
         .pipe(gulp.dest(''));
 });
 
-gulp.task('build', ['minify','inject', 'replace', 'packageCorePlugins', 'zip']);
+gulp.task('build', ['minify', 'inject', 'replace', 'packageCorePlugins', 'zip']);
 
 var corePlugins = [
-    "org.ekstep.conceptselector-1.1",
-    "org.ekstep.assetbrowser-1.2",
     "org.ekstep.uploadcontent-1.2",
-    "org.ekstep.contenteditorfunctions-1.2"
 ]
 
 gulp.task('minifyCorePlugins', function() {
