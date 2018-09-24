@@ -106,6 +106,30 @@ window.config = {
 | `plugins ` | It is a `array`, Array of plugins ex:`[{id:"org.sunbird.header",ver:"1.0",type:"plugin"}]`| NA |
 
 
+```js
+
+  openGenericEditor() {
+    jQuery.fn.iziModal = iziModal;
+    jQuery('#genericEditor').iziModal({
+      title: '',
+      iframe: true,
+      iframeURL: 'url', // collection-editor node_modules index.html path
+      navigateArrows: false,
+      fullscreen: false,
+      openFullscreen: true,
+      closeOnEscape: false,
+      overlayClose: false,
+      overlay: false,
+      overlayColor: '',
+      history: false,
+      onClosing: () => {
+        this._zone.run(() => {
+          this.closeModal();
+        });
+      }
+    });
+```
+
 ## How to setup sunbird-generic-editor in local
 1. Clone this sunbird-generic-editor repo from [here](https://github.com/project-sunbird/sunbird-generic-editor) 
 2. Clone the sunbird-content-plugins repo from [here](https://github.com/project-sunbird/sunbird-content-plugins) 
