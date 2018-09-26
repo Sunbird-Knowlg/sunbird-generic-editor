@@ -1,5 +1,7 @@
 # Generic editor
 
+[![npm version](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor.svg)](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor)
+
 ## Introduction
 
 Generic editor for all non-ECML contents (H5P, epub, PDF, HTML, Youtube, Video). 
