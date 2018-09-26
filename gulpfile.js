@@ -294,3 +294,12 @@ gulp.task('packageCorePlugins', ['minify', "minifyCorePlugins"], function() {
         read: false
     }).pipe(clean());
 });
+
+gulp.task("clone-plugins", function(done) {
+    git.clone('https://github.com/project-sunbird/sunbird-content-plugins.git', {args: '-b '+ branchName +' ./plugins'}, function (err) {
+        if (err) {
+            done(err);
+        }
+        done();
+    });
+});
