@@ -1,8 +1,8 @@
 {
-  "name": "sunbird-generic-editor",
-  "version": "1.0.0",
+  "name": "@project-sunbird/generic-editor",
+  "version": "0.0.2",
   "description": "Basic editor for all uploaded (non-ecml & non-collection) content",
-  "main": "Gruntfile.js",
+  "main": "gulpfile.js",
   "dependencies": {
     "body-parser": "*",
     "express": "^4.14.0",
@@ -11,6 +11,9 @@
     "lodash": "^4.16.6",
     "request": "*",
     "xmlbuilder": "*"
+  },
+  "directories": {
+    "test": "test"
   },
   "devDependencies": {
     "ajv": "^6.5.2",
@@ -88,12 +91,31 @@
   "scripts": {
     "build": "webpack",
     "plugin-build": "webpack --config webpack.plugin.config.js",
-    "test": "karma start karmaconf.js"
+    "build-editor": "npm run test && npm run collection-plugins && npm run build",
+    "test": "karma start karmaconf.js",
+    "build-npm-pkg": "gulp packageCorePlugins && npm run plugin-build && webpack --env.channel=NPM_PACKAGE && cd generic-editor && gulp copystyleImages && gulp clean && gulp injectrenamedfiles"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/project-sunbird/sunbird-generic-editor"
   },
-  "author": "",
-  "license": "CC"
+  "keywords": [
+    "Sunbird",
+    "Generic Editor",
+    "Youtube Editor",
+    "@project-sunbird/generic-editor",
+    "PDF" , "MP4", "webm", "epub" , "H5P" , "HTML",
+    "EkStep",
+    "Editor Framework",
+    "Open source editor"
+  ],
+  "author": "Venkateshwaran S <venkateshwarans@ilimi.in>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/project-sunbird/sunbird-generic-editor/issues"
+  },
+  "homepage": "https://github.com/project-sunbird/sunbird-generic-editor#readme",
+  "config": {
+    "corePluginVersion": "1.11.0"
+  }
 }
