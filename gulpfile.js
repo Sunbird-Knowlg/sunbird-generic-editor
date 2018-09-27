@@ -267,14 +267,19 @@ gulp.task('packageCorePluginsLocal', ["minifyCorePlugins"], function() {
     }).pipe(clean());
 });
 
-gulp.task('packageCorePlugins', ['minify', "minifyCorePlugins"], function() {
+gulp.task('addDir', function() {
+    return gulp.src('*.*', {read: false})
+       .pipe(gulp.dest('./generic-editor/scripts'))
+});
+
+gulp.task('packageCorePlugins', ["addDir", "minifyCorePlugins"], function() {
     var fs = require('fs');
     var _ = require('lodash');
     var jsDependencies = [];
     var cssDependencies = [];
     if (fs.existsSync('generic-editor/scripts/coreplugins.js')) {
         fs.unlinkSync('generic-editor/scripts/coreplugins.js');
-    }
+    } 
     corePlugins.forEach(function(plugin) {
         var manifest = JSON.parse(fs.readFileSync('plugins/' + plugin + '/manifest.json'));
         if (manifest.editor.dependencies) {
