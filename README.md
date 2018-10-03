@@ -2,6 +2,8 @@
 
 [![npm version](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor.svg)](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor)
 
+[![Build Status](https://travis-ci.org/project-sunbird/sunbird-generic-editor.svg?branch=release-1.11.0)](https://travis-ci.org/project-sunbird/sunbird-generic-editor)
+
 ## Introduction
 
 Generic editor for all non-ECML contents (H5P, epub, PDF, HTML, Youtube, Video). 
