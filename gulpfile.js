@@ -17,6 +17,8 @@ var uglify = require('gulp-uglify');
 var git = require('gulp-git');
 var versionNumber = process.env.version_number;
 var buildNumber = process.env.build_number;
+var branchName = process.env.branch || 'master';
+
 
 if (!versionNumber && !versionNumber) {
     console.error('Error!!! Cannot find verion_number and build_number env variables');
