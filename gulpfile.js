@@ -219,7 +219,7 @@ gulp.task('zip', ['minify', 'inject', 'replace', 'packageCorePlugins'], function
 gulp.task('build', ['minify', 'inject', 'replace', 'packageCorePlugins', 'zip']);
 
 var corePlugins = [
-    "org.ekstep.uploadcontent-1.2",
+    "org.ekstep.uploadcontent-1.3",
 ]
 
 gulp.task('minifyCorePlugins', function() {
