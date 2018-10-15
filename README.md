@@ -1,11 +1,154 @@
 # Generic editor
+
+[![npm version](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor.svg)](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor)
+
+[![Build Status](https://travis-ci.org/project-sunbird/sunbird-generic-editor.svg?branch=release-1.11.0)](https://travis-ci.org/project-sunbird/sunbird-generic-editor)
+
+## Introduction
+
 Generic editor for all non-ECML contents (H5P, epub, PDF, HTML, Youtube, Video). 
 
-### Steps to setup
-1. Clone this repo and [Content-Plugins repo](https://github.com/ekstep/CE-Core-Plugins) 
-2. go to the root directory: `npm install`
-3. `cd app` and run `bower install`.
-5. Create a symlink to 'Content-plugins' (`ln -s ../Content-Plugins plugins`)
-for windows:
-`F:\Ekstep\generic-editor>mklink /d plugins ..\Content-Plugins`
-`symbolic link created for plugins <<===>> ..\Content-Plugins`
+
+```js
+window.context = {
+  user: {
+    id: "",
+    name: "",
+    orgIds: []
+  },
+  sid: "",
+  contentId: "do_2125953980374712321362",
+  pdata: {
+    id: "",
+    ver: "1.10.",
+    pid: ""
+  },
+  tags: [],
+  channel: "",
+  env: "genericeditor",
+  framework: "NCF",
+  uid: "",
+  etags: {
+    app: [],
+    partner: [],
+    dims: []
+  }
+}
+```
+
+```js
+window.config = {
+  baseURL: "",
+  apislug: "/action",
+  build_number: "",
+  pluginRepo: "/content-plugins",
+  aws_s3_urls: [],
+  plugins: [
+    {
+      id: "",
+      ver: "",
+      type: ""
+    }
+  ],
+  corePluginsPackaged: true,
+  dispatcher: "local",
+  localDispatcherEndpoint: "/app/telemetry",
+  previewURL: "/content/preview/preview.html",
+  extContWhitelistedDomains: "youtube.com,youtu.be",
+  modalId: "genericEditor",
+  alertOnUnload: true,
+  headerLogo: "",
+  loadingImage: "",
+  previewConfig: {
+    repos: [],
+    plugins: [
+      {
+        id: "",
+        ver: "",
+        type: ""
+      }
+    ],
+    splash: {
+      text: "",
+      icon: "",
+      bgImage: "",
+      webLink: ""
+    },
+    overlay: {
+      showUser: false
+    },
+    showEndPage: false
+  },
+  enableTelemetryValidation: false,
+  absURL: "",
+  genericeditorPlugins: [
+    {
+      id: "",
+      ver: "",
+      type: "plugin"
+    }
+  ],
+  corePlugins: [],
+  corePluginMapping: {},
+  useProxyForURL: false
+}
+```
+
+| Property Name | Description | Default Value   |
+| --- | --- | --- |
+| `user` | It is a `object`, Which should contain the user details(userId, name)  | NA  |
+| `sid` | It is a `string`, Session identifier  | NA  |
+| `contentId ` | It is a `string`,  content identifier | NA  |
+| `pdata ` | It is a `object`,  producer information.It can have producer version, producer Id | NA  |
+| `tags ` | It is a `array`,  Encrypted dimension tags passed by respective channels| NA  |
+| `channel ` | It is a `string`,  Channel which has produced the event| NA  |
+| `framework ` | It is a `string`, example:NCF, NCERT| NA  |
+| `baseURL ` | It is a `string`, host url| NA  |
+| `corePluginsPackaged ` | It is a `boolean`, Which enables the collection-editor to load the plugins from packaged script rather than individual  | true  |
+| `pluginRepo ` | It is a `string`, From which location plugins should load  | /plugins  |
+| `dispatcher ` | It is a `string`,Where the telemetry should log ex(console, piwik, library, local) | console |
+| `plugins ` | It is a `array`, Array of plugins ex:`[{id:"org.sunbird.header",ver:"1.0",type:"plugin"}]`| NA |
+
+
+```js
+
+  openGenericEditor() {
+    jQuery.fn.iziModal = iziModal;
+    jQuery('#genericEditor').iziModal({
+      title: '',
+      iframe: true,
+      iframeURL: 'url', // collection-editor node_modules index.html path
+      navigateArrows: false,
+      fullscreen: false,
+      openFullscreen: true,
+      closeOnEscape: false,
+      overlayClose: false,
+      overlay: false,
+      overlayColor: '',
+      history: false,
+      onClosing: () => {
+        this._zone.run(() => {
+          this.closeModal();
+        });
+      }
+    });
+```
+
+## How to setup sunbird-generic-editor in local
+1. Clone this sunbird-generic-editor repo from [here](https://github.com/project-sunbird/sunbird-generic-editor) 
+2. Clone the sunbird-content-plugins repo from [here](https://github.com/project-sunbird/sunbird-content-plugins) 
+3. Go to the root directory sunbird-generic-editor.
+4. Run `npm install` to install node modules.
+5. `cd app` and run `bower install` to install bower components
+6. Create a symlink to 'sunbird-content-plugins' (`ln -s ../sunbird-content-plugins plugins`)
+>On Windows: use `mklink`
+
+
+## ChangeLogs
+   For changes logs please refer [here](https://github.com/project-sunbird/sunbird-generic  -editor/releases) 
+
+  
+ >For sunbird-generic-editor demo please visit [here](https://staging.open-sunbird.org/workspace/content/create)   
+
+
+

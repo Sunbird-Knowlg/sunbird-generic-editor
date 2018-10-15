@@ -14,8 +14,11 @@ var merge = require('merge-stream');
 var replace = require('gulp-string-replace');
 const zip = require('gulp-zip');
 var uglify = require('gulp-uglify');
+var git = require('gulp-git');
 var versionNumber = process.env.version_number;
 var buildNumber = process.env.build_number;
+var branchName = process.env.branch || 'master';
+
 
 if (!versionNumber && !versionNumber) {
     console.error('Error!!! Cannot find verion_number and build_number env variables');
@@ -216,7 +219,7 @@ gulp.task('zip', ['minify', 'inject', 'replace', 'packageCorePlugins'], function
 gulp.task('build', ['minify', 'inject', 'replace', 'packageCorePlugins', 'zip']);
 
 var corePlugins = [
-    "org.ekstep.uploadcontent-1.2",
+    "org.ekstep.uploadcontent-1.3",
 ]
 
 gulp.task('minifyCorePlugins', function() {
@@ -267,14 +270,19 @@ gulp.task('packageCorePluginsLocal', ["minifyCorePlugins"], function() {
     }).pipe(clean());
 });
 
-gulp.task('packageCorePlugins', ['minify', "minifyCorePlugins"], function() {
+gulp.task('addDir', function() {
+    return gulp.src('*.*', {read: false})
+       .pipe(gulp.dest('./generic-editor/scripts'))
+});
+
+gulp.task('packageCorePlugins', ["addDir", "minifyCorePlugins"], function() {
     var fs = require('fs');
     var _ = require('lodash');
     var jsDependencies = [];
     var cssDependencies = [];
     if (fs.existsSync('generic-editor/scripts/coreplugins.js')) {
         fs.unlinkSync('generic-editor/scripts/coreplugins.js');
-    }
+    } 
     corePlugins.forEach(function(plugin) {
         var manifest = JSON.parse(fs.readFileSync('plugins/' + plugin + '/manifest.json'));
         if (manifest.editor.dependencies) {
@@ -293,4 +301,13 @@ gulp.task('packageCorePlugins', ['minify', "minifyCorePlugins"], function() {
     return gulp.src('plugins/**/plugin.min.js', {
         read: false
     }).pipe(clean());
+});
+
+gulp.task("clone-plugins", function(done) {
+    git.clone('https://github.com/project-sunbird/sunbird-content-plugins.git', {args: '-b '+ branchName +' ./plugins'}, function (err) {
+        if (err) {
+            done(err);
+        }
+        done();
+    });
 });
