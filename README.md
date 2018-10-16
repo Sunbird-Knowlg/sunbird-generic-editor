@@ -1,8 +1,6 @@
 # Generic editor
 
-[![npm version](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor.svg)](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor)
-
-[![Build Status](https://travis-ci.org/project-sunbird/sunbird-generic-editor.svg?branch=release-1.11.0)](https://travis-ci.org/project-sunbird/sunbird-generic-editor)
+[![npm version](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor.svg)](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor) [![Build Status](https://travis-ci.org/project-sunbird/sunbird-generic-editor.svg?branch=release-1.11.0)](https://travis-ci.org/project-sunbird/sunbird-generic-editor)
 
 ## Introduction
 
@@ -152,3 +150,11 @@ window.config = {
 
 
 
+## License
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/project-sunbird/sunbird-generic-editor/blob/master/LICENSE) file for details
+
+## Versioning
+We use [SemVer](https://semver.org/) for versioning. For the versions available, see the [tags](https://github.com/project-sunbird/sunbird-generic-editor/tags) on this repository.
+
+## Any Issues?
+We have an open and active [issue tracker](https://project-sunbird.atlassian.net/issues/). Please report any issues.

@@ -1,6 +1,6 @@
 {
   "name": "@project-sunbird/generic-editor",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Basic editor for all uploaded (non-ecml & non-collection) content",
   "main": "gulpfile.js",
   "dependencies": {
