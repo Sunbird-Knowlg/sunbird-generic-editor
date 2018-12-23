@@ -54,6 +54,9 @@ window.org.ekstep.genericeditor.api = _.assign(org.ekstep.contenteditor.api, {
 		case ServiceConstants.USER_SERVICE:
 			service = org.ekstep.services.userService
 			break
+		case ServiceConstants.CONTENT_LOCK_SERVICE:
+			service = org.ekstep.services.lockService
+			break
 		}
 		return service
 	},
