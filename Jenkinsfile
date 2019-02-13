@@ -1,4 +1,3 @@
-package build
 node() {
     try {
         String ANSI_GREEN = "\u001B[32m"
@@ -10,22 +9,27 @@ node() {
         ansiColor('xterm') {
             stage('Checkout') {
                 cleanWs()
-                sh "git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins"
                 if (params.github_release_tag == "") {
                     checkout scm
                     commit_hash = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     branch_name = sh(script: 'git name-rev --name-only HEAD | rev | cut -d "/" -f1| rev', returnStdout: true).trim()
-                    build_tag = branch_name + "_" + commit_hash
-                    println(ANSI_BOLD + ANSI_YELLOW + "Tag not specified, using the latest commit hash: " + commit_hash + ANSI_NORMAL)
+                    artifact_version = branch_name + "_" + commit_hash
+                    println(ANSI_BOLD + ANSI_YELLOW + "github_release_tag not specified, using the latest commit hash: " + commit_hash + ANSI_NORMAL)
+                    sh "git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins"
                     sh "cd plugins && git checkout origin/${branch_name} -b ${branch_name}"
                 } else {
                     def scmVars = checkout scm
                     checkout scm: [$class: 'GitSCM', branches: [[name: "refs/tags/${params.github_release_tag}"]], userRemoteConfigs: [[url: scmVars.GIT_URL]]]
-                    build_tag = params.github_release_tag
-                    println(ANSI_BOLD + ANSI_YELLOW + "Tag specified, building from tag: " + params.github_release_tag + ANSI_NORMAL)
-                    sh "cd plugins && git checkout tags/${params.github_release_tag} -b ${params.github_release_tag}"
+                    artifact_version = params.github_release_tag
+                    println(ANSI_BOLD + ANSI_YELLOW + "github_release_tag specified, building from github_release_tag: " + params.github_release_tag + ANSI_NORMAL)
+                    sh "git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins"
+                    sh """
+                        cd plugins
+                        checkout_tag=\$(git tag | grep "${params.github_release_tag}*" | sort -n -r | head -1)
+                        git checkout tags/${checkout_tag} -b ${checkout_tag}
+                    """
                 }
-                echo "build_tag: " + build_tag
+                echo "artifact_version: " + artifact_version
 
                 stage('Build') {
                     sh """
@@ -37,15 +41,14 @@ node() {
                         bower cache clean
                         bower install --force
                         cd ..
-                        export version_number=${build_tag}
+                        export version_number=${artifact_version}
                         echo "Version: "$version_number
-                        export build_number = $build_number
-                        
                         gulp packageCorePlugins
                         npm run plugin-build
                         npm run build
                         #gulp build
                         npm run test
+                        cp generic-editor.zip generic-editor.zip:${artifact_version}
                     """
                 }
                 
@@ -54,8 +57,10 @@ node() {
             }
                 
                 stage('ArchiveArtifacts') {
-                    archiveArtifacts "generic-editor.zip"
-                    currentBuild.description = "${build_tag}"
+                    archiveArtifacts "generic-editor.zip:${artifact_version}"
+                    sh """echo {\\"artifact_name\\" : \\"generic-editor.zip.zip\\", \\"artifact_version\\" : \\"${artifact_version}\\", \\"node_name\\" : \\"${env.NODE_NAME}\\"} > metadata.json"""
+                    archiveArtifacts artifacts: 'metadata.json', onlyIfSuccessful: true
+                    currentBuild.description = "${artifact_version}"
                 }
             }
         }
