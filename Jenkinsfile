@@ -33,6 +33,7 @@ node() {
 
                 stage('Build') {
                     sh """
+                        export version_number=${artifact_version}
                         rm -rf generic-editor
                         node -v
                         npm -v
@@ -41,8 +42,6 @@ node() {
                         bower cache clean
                         bower install --force
                         cd ..
-                        export version_number=${artifact_version}
-                        echo "Version: "$version_number
                         gulp packageCorePlugins
                         npm run plugin-build
                         npm run build
