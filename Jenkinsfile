@@ -57,7 +57,7 @@ node() {
                         mkdir generic_editor_artifacts
                         cp generic-editor.zip generic_editor_artifacts
                         zip -j generic_editor_artifacts.zip:${artifact_version} generic_editor_artifacts/*
-                    """
+               """
             archiveArtifacts artifacts: "generic_editor_artifacts.zip:${artifact_version}", fingerprint: true, onlyIfSuccessful: true
             sh """echo {\\"artifact_name\\" : \\"lp_yarn_artifacts.zip\\", \\"artifact_version\\" : \\"${artifact_version}\\", \\"node_name\\" : \\"${env.NODE_NAME}\\"} > metadata.json"""
             archiveArtifacts artifacts: 'metadata.json', onlyIfSuccessful: true
