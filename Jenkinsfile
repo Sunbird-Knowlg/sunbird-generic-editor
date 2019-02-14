@@ -57,7 +57,7 @@ node() {
                 
                 stage('ArchiveArtifacts') {
                     archiveArtifacts "generic-editor.zip:${artifact_version}"
-                    sh """echo {\\"artifact_name\\" : \\"generic-editor.zip.zip\\", \\"artifact_version\\" : \\"${artifact_version}\\", \\"node_name\\" : \\"${env.NODE_NAME}\\"} > metadata.json"""
+                    sh """echo {\\"artifact_name\\" : \\"generic-editor.zip\\", \\"artifact_version\\" : \\"${artifact_version}\\", \\"node_name\\" : \\"${env.NODE_NAME}\\"} > metadata.json"""
                     archiveArtifacts artifacts: 'metadata.json', onlyIfSuccessful: true
                     currentBuild.description = "${artifact_version}"
                 }
