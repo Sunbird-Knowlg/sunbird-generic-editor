@@ -1,0 +1,39 @@
+package Deploy
+node() {
+    try {
+        String ANSI_GREEN = "\u001B[32m"
+        String ANSI_NORMAL = "\u001B[0m"
+        String ANSI_BOLD = "\u001B[1m"
+        String ANSI_RED = "\u001B[31m"
+        String ANSI_YELLOW = "\u001B[33m"
+
+            ansiColor('xterm') {
+                stage('deploy artifact') {
+                    cleanWs()
+                    copyArtifacts projectName: params.absolute_job_path, fingerprintArtifacts: true, flatten: true
+                    artifact_name = sh(returnStdout: true, script: 'jq -r .artifact_name metadata.json').trim()
+                    artifact_version = sh(returnStdout: true, script: 'jq -r .artifact_version metadata.json').trim()
+                    artifact = artifact_name + ":" + artifact_version
+                    sh """
+                       unzip ${artifact}
+                       unzip -o generic-editor.zip -d generic-editor
+                       az storage blob upload-batch --destination ${params.container_name}/generic-editor --source generic-editor --account-name $AZ_ACCOUNT_NAME --account-key $AZ_ACCOUNT_KEY
+                       cd generic-editor
+                       npm config set strict-ssl false
+                       npm install
+                       npm install promise
+                       gulp package
+                       az storage blob upload-batch --destination ${params.container_name}/artefacts/editor --source generic-editor --account-name $AZ_ACCOUNT_NAME --account-key $AZ_ACCOUNT_KEY
+                       az storage blob upload-batch --destination ${params.container_name}/artefacts/coreplugins --source generic-editor --account-name $AZ_ACCOUNT_NAME --account-key $AZ_ACCOUNT_KEY
+                    """
+                    archiveArtifacts artifacts: "${artifact}", fingerprint: true, onlyIfSuccessful: true
+                    archiveArtifacts artifacts: 'metadata.json', onlyIfSuccessful: true
+                    currentBuild.description = "${values.artifact_version}"
+                }
+            }
+    }
+    catch (err) {
+        currentBuild.result = "FAILURE"
+        throw err
+    }
+}
