@@ -47,7 +47,6 @@ node() {
                         npm run build
                         #gulp build
                         npm run test
-                        cp generic-editor.zip generic-editor.zip:${artifact_version}
                     """
                 }
                 
@@ -56,8 +55,13 @@ node() {
             }
                 
                 stage('ArchiveArtifacts') {
-                    archiveArtifacts "generic-editor.zip:${artifact_version}"
-                    sh """echo {\\"artifact_name\\" : \\"generic-editor.zip\\", \\"artifact_version\\" : \\"${artifact_version}\\", \\"node_name\\" : \\"${env.NODE_NAME}\\"} > metadata.json"""
+                    sh """
+                        mkdir generic-editor-artifacts
+                        cp generic-editor.zip generic-editor-artifacts
+                        zip -j  generic-editor-artifacts.zip:${artifact_version}  generic-editor-artifacts/*                      
+                    """
+                    archiveArtifacts "generic-editor-artifacts.zip:${artifact_version}"
+                    sh """echo {\\"artifact_name\\" : \\"generic-editor-artifacts.zip\\", \\"artifact_version\\" : \\"${artifact_version}\\", \\"node_name\\" : \\"${env.NODE_NAME}\\"} > metadata.json"""
                     archiveArtifacts artifacts: 'metadata.json', onlyIfSuccessful: true
                     currentBuild.description = "${artifact_version}"
                 }
