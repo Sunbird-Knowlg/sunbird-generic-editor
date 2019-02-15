@@ -29,7 +29,7 @@ node() {
                     """
                    }
                     
-                    currentBuild.description = "${values.artifact_version}"
+                    currentBuild.description = "${artifact_version}"
                 }
             }
     }
