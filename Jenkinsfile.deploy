@@ -27,9 +27,8 @@ node() {
                        az storage blob upload-batch --destination ${params.container_name}/artefacts/editor/ --source dist/editor/ --account-name $azure_account_name --account-key $azure_account_key
                        az storage blob upload-batch --destination ${params.container_name}/artefacts/coreplugins/ --source dist/coreplugins/ --account-name $azure_account_name --account-key $azure_account_key
                     """
-}
-                    archiveArtifacts artifacts: "${artifact}", fingerprint: true, onlyIfSuccessful: true
-                    archiveArtifacts artifacts: 'metadata.json', onlyIfSuccessful: true
+                   }
+                    
                     currentBuild.description = "${values.artifact_version}"
                 }
             }
