@@ -5,11 +5,13 @@
   "main": "gulpfile.js",
   "dependencies": {
     "body-parser": "*",
+    "build": "^0.1.4",
     "express": "^4.14.0",
     "grunt-contrib-rename": "0.0.3",
     "gulp-sass": "^3.1.0",
     "lodash": "^4.16.6",
     "request": "*",
+    "sunbird-ui-components": "^1.0.5",
     "xmlbuilder": "*"
   },
   "directories": {
