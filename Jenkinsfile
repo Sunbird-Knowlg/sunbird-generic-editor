@@ -34,7 +34,7 @@ node() {
 
                 stage('Build') {
                     sh """
-                        export version_number=${artifact_version}
+                        export version_number=${branch_name}
                         rm -rf generic-editor
                         node -v
                         npm -v
