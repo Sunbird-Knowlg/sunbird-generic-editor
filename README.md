@@ -1,5 +1,6 @@
 # Generic editor
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1902ad4c61a74e3c98ba11a6a16e08eb)](https://app.codacy.com/app/sunbird-bot/sunbird-generic-editor?utm_source=github.com&utm_medium=referral&utm_content=project-sunbird/sunbird-generic-editor&utm_campaign=Badge_Grade_Settings)
 [![npm version](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor.svg)](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor) [![Build Status](https://travis-ci.org/project-sunbird/sunbird-generic-editor.svg?branch=release-1.11.0)](https://travis-ci.org/project-sunbird/sunbird-generic-editor)
 
 ## Introduction

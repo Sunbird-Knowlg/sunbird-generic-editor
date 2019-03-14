@@ -116,9 +116,10 @@ module.exports = (env, argv) => {
         resolve: {
             alias: {
                 'angular': path.resolve(`${BASE_PATH}app/bower_components/angular/angular.js`),
-                'Fingerprint2': path.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/dist/fingerprint2.min.js`),
+                'Fingerprint2': path.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/fingerprint2.js`),
                 'async': path.resolve(`${BASE_PATH}app/bower_components/async/dist/async.min.js`),
-                'EventBus': path.resolve(`${BASE_PATH}app/libs/eventbus.min.js`)
+                'EventBus': path.resolve(`${BASE_PATH}app/libs/eventbus.min.js`),
+                'UAParser': path.resolve(`${BASE_PATH}/app/libs/ua-parser.min.js`)
             }
         },
         module: {
@@ -176,10 +177,17 @@ module.exports = (env, argv) => {
                     }
                 },
                 {
-                    test: require.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/dist/fingerprint2.min.js`),
+                    test: require.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/fingerprint2.js`),
                     use: [{
                         loader: 'expose-loader',
                         options: 'Fingerprint2'
+                    }]
+                },
+                {
+                    test: require.resolve(`${BASE_PATH}app/libs/ua-parser.min.js`),
+                    use: [{
+                        loader: 'expose-loader',
+                        options: 'UAParser'
                     }]
                 },
                 {
@@ -286,6 +294,7 @@ module.exports = (env, argv) => {
             }),
             new webpack.ProvidePlugin({
                 Fingerprint2: 'Fingerprint2',
+                UAParser: 'UAParser',
                 async: 'async',
                 "window.async": 'async',
                 EventBus: "EventBus"
