@@ -92,6 +92,16 @@ const APP_STYLE = [
     "./app/libs/please-wait.css",
     "./app/libs/ng-tags-input.css",
     "./generic-editor/scripts/plugin-vendor.min.css", // Plugins css files (Which is generated while packaging coreplugins  from webpack.plugin.config.js)
+    './app/styles/fonts/notosans-bengali/notosansbengali.css',
+    './app/styles/fonts/notosans-malayalam/notosansmalayalam.css',
+    './app/styles/fonts/notosans-gurmukhi/notosansgurmukhi.css',
+    './app/styles/fonts/notosans-devanagari/notosansdevanagari.css',
+    './app/styles/fonts/notosans-gujarati/notosansgujarati.css',
+    './app/styles/fonts/notosans-telugu/notosanstelugu.css',
+    './app/styles/fonts/notosans-tamil/notosanstamil.css',
+    './app/styles/fonts/notosans-kannada/notosanskannada.css',
+    './app/styles/fonts/notosans-oriya/notosansoriya.css',
+    './app/styles/fonts/noto-nastaliqurdu/notonastaliqurdu.css',
     './app/styles/fonts-override.css'
 ];
 
