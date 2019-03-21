@@ -91,7 +91,8 @@ const APP_STYLE = [
     "./app/libs/spinkit.css",
     "./app/libs/please-wait.css",
     "./app/libs/ng-tags-input.css",
-    "./generic-editor/scripts/plugin-vendor.min.css" // Plugins css files (Which is generated while packaging coreplugins  from webpack.plugin.config.js)
+    "./generic-editor/scripts/plugin-vendor.min.css", // Plugins css files (Which is generated while packaging coreplugins  from webpack.plugin.config.js)
+    './app/styles/fonts-override.css'
 ];
 
 // removing the duplicate files
