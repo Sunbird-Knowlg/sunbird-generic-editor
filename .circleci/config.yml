@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:7.10
+      - image: g33tha/plugin:test
         environment:
            version_number: $CIRCLE_BRANCH
            build_number: $CIRCLE_BUILD_NUM
@@ -10,12 +10,11 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-          
+      
+      - run: git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins -b $CIRCLE_BRANCH
       - run: npm install
-      - run: cd app && sudo npm install -g bower
-      - run: cd app && bower cache clean
-      - run: cd app && bower install --force 
-      - run: sudo npm install -g gulp
+      - run: cd app && bower cache clean --allow-root
+      - run: cd app && bower install --force --allow-root
       - run: gulp clone-plugins
       - run: gulp packageCorePlugins
       - run: npm run plugin-build
