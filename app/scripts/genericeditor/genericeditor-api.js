@@ -6,7 +6,12 @@ window.org.ekstep.genericeditor.api = _.assign(org.ekstep.contenteditor.api, {
 			{ 'id': 'org.ekstep.genericeditorsidebar', 'ver': '1.0', 'type': 'plugin' }]
 		gcPlugins = _.concat(gcPlugins, ecEditor.getConfig('genericeditorPlugins'))
 		org.ekstep.pluginframework.pluginManager.loadAllPlugins(gcPlugins, undefined, function () {
-			org.ekstep.services.telemetryService.start((new Date()).getTime() - startTime)
+			var EDITOR_LOADED = Date.now();
+			org.ekstep.services.telemetryService.start(EDITOR_LOADED - startTime)
+			ecEditor.addEventListener("content:load:complete", function () {
+				//subtype should be "content_load_time"
+				ecEditor.getService(ServiceConstants.TELEMETRY_SERVICE).interact({ type: "click", subtype: "content_load_time", duration: (Date.now() - EDITOR_LOADED).toString() })
+			})
 			if (cb) cb()
 		})
 	},
@@ -27,36 +32,36 @@ window.org.ekstep.genericeditor.api = _.assign(org.ekstep.contenteditor.api, {
 	getService: function (serviceId) {
 		var service = ''
 		switch (serviceId) {
-		case ServiceConstants.POPUP_SERVICE:
-			service = org.ekstep.services.popupService
-			break
-		case ServiceConstants.CONTENT_SERVICE:
-			service = org.ekstep.services.contentService
-			break
-		case ServiceConstants.ASSESSMENT_SERVICE:
-			service = org.ekstep.services.assessmentService
-			break
-		case ServiceConstants.LANGUAGE_SERVICE:
-			service = org.ekstep.services.languageService
-			break
-		case ServiceConstants.SEARCH_SERVICE:
-			service = org.ekstep.services.searchService
-			break
-		case ServiceConstants.META_SERVICE:
-			service = org.ekstep.services.metaService
-			break
-		case ServiceConstants.ASSET_SERVICE:
-			service = org.ekstep.services.assetService
-			break
-		case ServiceConstants.TELEMETRY_SERVICE:
-			service = org.ekstep.services.telemetryService
-			break
-		case ServiceConstants.USER_SERVICE:
-			service = org.ekstep.services.userService
-			break
-		case ServiceConstants.CONTENT_LOCK_SERVICE:
-			service = org.ekstep.services.lockService
-			break
+			case ServiceConstants.POPUP_SERVICE:
+				service = org.ekstep.services.popupService
+				break
+			case ServiceConstants.CONTENT_SERVICE:
+				service = org.ekstep.services.contentService
+				break
+			case ServiceConstants.ASSESSMENT_SERVICE:
+				service = org.ekstep.services.assessmentService
+				break
+			case ServiceConstants.LANGUAGE_SERVICE:
+				service = org.ekstep.services.languageService
+				break
+			case ServiceConstants.SEARCH_SERVICE:
+				service = org.ekstep.services.searchService
+				break
+			case ServiceConstants.META_SERVICE:
+				service = org.ekstep.services.metaService
+				break
+			case ServiceConstants.ASSET_SERVICE:
+				service = org.ekstep.services.assetService
+				break
+			case ServiceConstants.TELEMETRY_SERVICE:
+				service = org.ekstep.services.telemetryService
+				break
+			case ServiceConstants.USER_SERVICE:
+				service = org.ekstep.services.userService
+				break
+			case ServiceConstants.CONTENT_LOCK_SERVICE:
+				service = org.ekstep.services.lockService
+				break
 		}
 		return service
 	},
