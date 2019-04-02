@@ -339,7 +339,6 @@ body {
   .ui.ordered.steps .step:before,
   .ui.ordered.steps .step.completed:before,
   .ui.message .header,
-  .ui.table,
   .ui.sortable.table thead th:after,
   .ui.card>.content>.header,
   .ui.cards>.card>.content>.header,
@@ -367,8 +366,24 @@ body {
   .ui.form input[type=text],
   .ui.form input[type=time],
   .ui.form input[type=url],
+  .ui.input input,
   .ui.menu,
   .ui.dropdown,
+  .ngdialog.ngdialog-theme-default .ngdialog-content,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content,
+  .qc-ngdialog-custome > .ngdialog-content,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content h1,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content h2,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content h3,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content h4,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content h5,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content h6,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content li,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content p,
+  .ngdialog.ngdialog-theme-plain .ngdialog-content ul
+  .ui.modal > .header,
+  .label-icon-box-text,
+  .cke_reset_all, .cke_reset_all *, .cke_reset_all a, .cke_reset_all textarea,
   .ui.category.search> .results .category> .name {
     font-family: inherit !important;
   }
