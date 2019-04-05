@@ -8,17 +8,17 @@ const BUILD_NUMBER = process.env.build_number;
 const EDITOR_VER = process.env.version_number;
 
 const CONFIG_STRING_REPLACE = [{
-        search: '/plugins',
-        replace: '/content-plugins'
-    },
-    {
-        search: "/api",
-        replace: '/action'
-    },
-    {
-        search: 'https://dev.ekstep.in',
-        replace: ''
-    }
+    search: '/plugins',
+    replace: '/content-plugins'
+},
+{
+    search: "/api",
+    replace: '/action'
+},
+{
+    search: 'https://dev.ekstep.in',
+    replace: ''
+}
 ];
 
 const BASE_PATH = './'
@@ -43,7 +43,7 @@ const {
 } = require('child_process');
 const cpy = require('cpy');
 const gulp = require('gulp');
-
+const CompressionPlugin = require('compression-webpack-plugin');
 
 /**
  * External files 
@@ -263,23 +263,23 @@ module.exports = (env, argv) => {
             }),
             // copy the index.html and templated to eidtor filder
             new CopyWebpackPlugin([{
-                    from: './app/index.html',
-                    to: './[name].[ext]',
-                    toType: 'template'
-                },
-                {
-                    from: './deploy/gulpfile.js',
-                    to: './'
-                },
-                {
-                    from: './deploy/package.json',
-                    to: './'
-                },
-                {
-                    from: './generic-editor/scripts/coreplugins.js',
-                    to: './',
-                    flatten: true
-                },
+                from: './app/index.html',
+                to: './[name].[ext]',
+                toType: 'template'
+            },
+            {
+                from: './deploy/gulpfile.js',
+                to: './'
+            },
+            {
+                from: './deploy/package.json',
+                to: './'
+            },
+            {
+                from: './generic-editor/scripts/coreplugins.js',
+                to: './',
+                flatten: true
+            },
             ]),
             new ImageminPlugin({
                 test: /\.(jpe?g|png|gif|svg)$/i,
@@ -311,6 +311,13 @@ module.exports = (env, argv) => {
                     }
                 },
                 canPrint: true
+            }),
+            new CompressionPlugin({
+                algorithm: 'gzip',
+                minRatio: 1,
+                filename(fileIterator) {
+                    return `${fileIterator.path}.gz`
+                }
             }),
             new ZipPlugin({
                 path: path.join(__dirname, '.'),
