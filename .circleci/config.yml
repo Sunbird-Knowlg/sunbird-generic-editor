@@ -22,8 +22,10 @@ jobs:
       - run: npm run build
       - run: npm run test
       
+      - run: mv ./coverage/PhantomJS*/cobertura-coverage.xml /tmp/
+      
       - store_artifacts:
-          path: ./coverage/PhantomJS*/cobertura-coverage.xml
+          path: /tmp/cobertura-coverage.xml
           destination: cobertura-coverage.xml
       
       - save_cache:
