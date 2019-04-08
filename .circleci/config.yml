@@ -22,8 +22,9 @@ jobs:
       - run: npm run build
       - run: npm run test
       
-      - run: wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets[0].browser_download_url')
-      - run: java -jar codacy-coverage-reporter-assembly.jar report -l Java -r /home/circleci/project/coverage/*/cobertura-coverage.xml
+      - store_artifacts:
+          path: ./coverage/PhantomJS*/cobertura-coverage.xml
+          destination: cobertura-coverage.xml
       
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
