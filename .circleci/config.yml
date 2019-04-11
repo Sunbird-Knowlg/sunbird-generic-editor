@@ -29,7 +29,7 @@ jobs:
       - run: npm run build
       - run: npm run test
       
-      - run: cp ./coverage/PhantomJS*/cobertura-coverage.xml /tmp/
+      - run: mv ./coverage/PhantomJS*/cobertura-coverage.xml /tmp/
       
       - store_artifacts:
           path: /tmp/cobertura-coverage.xml
