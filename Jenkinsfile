@@ -35,6 +35,7 @@ node() {
                 stage('Build') {
                     sh """
                         export version_number=${branch_name}
+                        export build_number=${commit_hash}
                         rm -rf generic-editor
                         node -v
                         npm -v
