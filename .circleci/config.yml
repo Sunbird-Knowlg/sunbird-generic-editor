@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: g33tha/plugin:test
+      - image: circleci/node:6.10-browsers
         environment:
            version_number: $CIRCLE_BRANCH
            build_number: $CIRCLE_BUILD_NUM
@@ -11,18 +11,29 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       
-      - run: git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins -b $CIRCLE_BRANCH
+      - run:
+          name: clone plugins
+          command: |
+            prnumber=$(echo $CI_PULL_REQUEST | awk -F'/' '{print $NF}')
+            prdata=$(curl -X GET -u $GITHUB_USER_TOKEN:x-oauth-basic https://api.github.com/repos/project-sunbird/sunbird-generic-editor/pulls/$prnumber)
+            target_branch=$(echo "${prdata}" | jq -r '.base.ref')
+            git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins -b $target_branch
+      
+      - run: sudo npm install -g bower@1.8.0 grunt-cli@1.2.0 gulp@3.9.1 codacy-coverage
       - run: npm install
       - run: cd app && bower cache clean --allow-root
       - run: cd app && bower install --force --allow-root
-      - run: gulp clone-plugins
+      #- run: gulp clone-plugins
       - run: gulp packageCorePlugins
       - run: npm run plugin-build
       - run: npm run build
       - run: npm run test
+      
+      - run: cp ./coverage/PhantomJS*/cobertura-coverage.xml /tmp/
+      
       - store_artifacts:
-          path: generic-editor.zip
-          destination: generic-editor.zip
+          path: /tmp/cobertura-coverage.xml
+          destination: cobertura-coverage.xml
       
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
