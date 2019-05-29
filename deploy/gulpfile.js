@@ -9,6 +9,7 @@ var packageJson = JSON.parse(fs.readFileSync('./package.json'));
 var promise = require("any-promise");
 var rename = require("gulp-rename");
 var clean = require('gulp-clean');
+var gzip = require('gulp-gzip');
 
 var cachebust = new CacheBuster();
 gulp.task('renameminifiedfiles', function() {
@@ -42,7 +43,13 @@ gulp.task('bower-package', function() {
 
 gulp.task('package', ['renameminifiedfiles', 'injectrenamedfiles', 'iframe-package', 'embed-package', 'coreplugins-package']);
 
-gulp.task('iframe-package', ['bower-package'], function() {
+gulp.task('iframe-compress', ['bower-package'], function() {
+    return gulp.src(['build/**/*.js', 'build/**/*.css', 'build/**/*.html', 'build/**/*.png', 'build/**/*.ttf', 'build/**/*.woff', 'build/**/*.woff2'])
+    .pipe(gzip())
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('iframe-package', ['iframe-compress'], function() {
     var package_id = packageJson['name'] + '-' + 'iframe' + '-' + packageJson['version'];
     return mergeStream(gulp.src('build/**').pipe(zip(package_id + '.zip')).pipe(gulp.dest('dist/editor/')),
         gulp.src('build/**').pipe(zip(packageJson['name'] + '-iframe-latest' + '.zip')).pipe(gulp.dest('dist/editor/')));
@@ -53,7 +60,13 @@ gulp.task('bower-package-transform', ['iframe-package'], function() {
         gulp.src('build/scripts/script.min.js').pipe(replace("src='scripts", "src='content-editor-embed/scripts")).pipe(gulp.dest('build/scripts/')));
 });
 
-gulp.task('embed-package', ['bower-package-transform'], function() {
+gulp.task('embed-compress', ['bower-package-transform'], function() {
+    return gulp.src(['build/index.html'])
+    .pipe(gzip())
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('embed-package', ['embed-compress'], function() {
     var package_id = packageJson['name'] + '-' + 'embed' + '-' + packageJson['version'];
     return mergeStream(gulp.src('build/**').pipe(zip(package_id + '.zip')).pipe(gulp.dest('dist/editor/')),
         gulp.src('build/**').pipe(zip(packageJson['name'] + '-embed-latest' + '.zip')).pipe(gulp.dest('dist/editor/')));
