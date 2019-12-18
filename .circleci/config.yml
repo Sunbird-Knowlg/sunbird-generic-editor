@@ -1,6 +1,7 @@
 version: 2.1
 jobs:
   build:
+    working_directory: ~/generic-editor
     docker:
       - image: circleci/node:6.10-browsers
         environment:
