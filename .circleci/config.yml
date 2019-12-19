@@ -1,13 +1,16 @@
 version: 2.1
 jobs:
   build:
+    working_directory: ~/generic-editor
     docker:
       - image: circleci/node:6.10-browsers
         environment:
            version_number: $CIRCLE_BRANCH
            build_number: $CIRCLE_BUILD_NUM
     steps:
-      - checkout
+      - checkout:
+          path: ~/generic-editor
+
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       
@@ -32,11 +35,11 @@ jobs:
       - run: npm run build
       - run: npm run test
       
-      - run: cp ./coverage/PhantomJS*/cobertura-coverage.xml /tmp/
+      - run: mkdir -p /tmp/coverage && cp /home/circleci/generic-editor/coverage/lcov/PhantomJS\ 2.1.1\ \(Linux\ 0.0.0\)/lcov.info /tmp/coverage
       
       - store_artifacts:
-          path: /tmp/cobertura-coverage.xml
-          destination: cobertura-coverage.xml
+          path: /tmp/coverage
+          destination: coverage
 
       - run: 
           name: Install sonar scanner
