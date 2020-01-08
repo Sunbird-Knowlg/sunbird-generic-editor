@@ -12,7 +12,6 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 var corePlugins = [
     "org.ekstep.conceptselector-1.1",
     "org.ekstep.topicselector-1.0",
-    "org.ekstep.assetbrowser-1.2",
     "org.ekstep.contenteditorfunctions-1.2",
     "org.ekstep.toaster-1.0"
 ];
@@ -115,6 +114,8 @@ module.exports = {
             'qq': path.resolve('./node_modules/xmlbuilder/lib/index.js'),
             'X2JS': path.resolve('./plugins/org.ekstep.assessmentbrowser-1.1/editor/libs/xml2json.js'),
             'iziToast': path.resolve('./app/bower_components/izitoast/dist/js/iziToast.min.js'),
+            'global/document': path.resolve('./node_modules/global/window.js'),
+			'global/window': path.resolve('./node_modules/global/window.js')
 
         }
     },
