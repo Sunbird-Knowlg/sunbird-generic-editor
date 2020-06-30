@@ -232,6 +232,7 @@ gulp.task('build', ['minify', 'inject', 'replace', 'packageCorePlugins', 'zip'])
 var corePlugins = [
     "org.ekstep.uploadcontent-1.5",
     "org.ekstep.assetbrowser-1.3",
+    "org.ekstep.uploadlargecontent-1.0",
 ]
 
 gulp.task('minifyCorePlugins', function() {
