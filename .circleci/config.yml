@@ -55,7 +55,7 @@ jobs:
 
       - run: 
           name: Sonar scanner
-          command: 'source ~/.nvm/nvm.sh && sonar-scanner'
+          command: source ~/.nvm/nvm.sh | sonar-scanner
             
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
