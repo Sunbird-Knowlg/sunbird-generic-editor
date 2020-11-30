@@ -82,7 +82,7 @@
     "phantomjs": "2.1.7",
     "postcss-cli": "8.2.0",
     "purify-css": "1.2.5",
-    "purifycss-webpack": "*",
+    "purifycss-webpack": "0.7.0",
     "sass-loader": "^7.0.3",
     "string-replace-loader": "2.1",
     "svg-inline-loader": "*",
