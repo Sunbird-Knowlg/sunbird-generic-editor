@@ -109,6 +109,8 @@ window.config = {
 | `plugins ` | It is a `array`, Array of plugins ex:`[{id:"org.sunbird.header",ver:"1.0",type:"plugin"}]`| NA |
 
 
+## Integration
+
 ```js
 
   openGenericEditor() {
