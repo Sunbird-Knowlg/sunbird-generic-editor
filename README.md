@@ -4,9 +4,9 @@
 [![npm version](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor.svg)](https://badge.fury.io/js/%40project-sunbird%2Fgeneric-editor) [![Build Status](https://travis-ci.org/project-sunbird/sunbird-generic-editor.svg?branch=release-1.11.0)](https://travis-ci.org/project-sunbird/sunbird-generic-editor)
 
 ## Introduction
+The generic editor is used to create contents which can be uploaded as files(H5P, epub, PDF, HTML, Youtube, Video).
 
-Generic editor for all non-ECML contents (H5P, epub, PDF, HTML, Youtube, Video). 
-
+## Configuration
 
 ```js
 window.context = {
@@ -108,6 +108,8 @@ window.config = {
 | `dispatcher ` | It is a `string`,Where the telemetry should log ex(console, piwik, library, local) | console |
 | `plugins ` | It is a `array`, Array of plugins ex:`[{id:"org.sunbird.header",ver:"1.0",type:"plugin"}]`| NA |
 
+
+## Integration
 
 ```js
 

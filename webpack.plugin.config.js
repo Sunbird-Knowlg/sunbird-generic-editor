@@ -73,7 +73,7 @@ function packagePlugins() {
             });
         }
         dependenciesArr.push('org.ekstep.pluginframework.pluginManager.registerPlugin(' + JSON.stringify(manifest) + ',' + pluginContent.code.replace(/;\s*$/, "") + ')')
-        fs.appendFile('plugins/' + plugin + '/editor/plugin.dist.js', [...dependenciesArr].join("\n"))
+        fs.appendFile('plugins/' + plugin + '/editor/plugin.dist.js', [...dependenciesArr].join("\n"), function(){})
         pluginPackageArr.push('./plugins/' + plugin + '/editor/plugin.dist.js')
     })
 
