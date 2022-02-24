@@ -302,9 +302,9 @@ gulp.task('packageCorePlugins', ["addDir", "minifyCorePlugins"], function() {
             manifest.editor.dependencies.forEach(function(dependency) {
                 var resource = '/content-plugins/' + plugin + '/' + dependency.src;
                 if (dependency.type == 'js') {
-                    fs.appendFile('generic-editor/scripts/coreplugins.js', "org.ekstep.pluginframework.resourceManager.loadExternalResource('" + resource + "', 'js')" + "\n");
+                    fs.appendFile('generic-editor/scripts/coreplugins.js', "org.ekstep.pluginframework.resourceManager.loadExternalResource('" + resource + "', 'js')" + "\n", function(){});
                 } else if (dependency.type == 'css') {
-                    fs.appendFile('generic-editor/scripts/coreplugins.js', "org.ekstep.pluginframework.resourceManager.loadExternalResource('" + resource + "', 'css')" + "\n");
+                    fs.appendFile('generic-editor/scripts/coreplugins.js', "org.ekstep.pluginframework.resourceManager.loadExternalResource('" + resource + "', 'css')" + "\n", function(){});
                 }
             });
         }
