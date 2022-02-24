@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/generic-editor
     docker:
-      - image: circleci/node:8.0.0-browsers
+      - image: circleci/node:10.0.0-browsers
         environment:
            version_number: $CIRCLE_BRANCH
            build_number: $CIRCLE_BUILD_NUM
@@ -27,7 +27,7 @@ jobs:
             fi
 
       - run: sudo npm install -g bower@1.8.0 grunt-cli@1.2.0 gulp@3.9.1
-      - run: sudo npm install
+      - run: npm install
       - run: cd app && bower cache clean --allow-root
       - run: cd app && bower install --force --allow-root
       - run: gulp packageCorePlugins
