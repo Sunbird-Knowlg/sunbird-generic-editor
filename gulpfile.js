@@ -308,7 +308,7 @@ gulp.task('packageCorePlugins', ["addDir", "minifyCorePlugins"], function() {
                 }
             });
         }
-        var plugin = fs.readFileSync('plugins/' + plugin + '/editor/plugin.min.js', 'utf8');
+        var plugin = fs.readFileSync('plugins/' + plugin + '/editor/plugin.min.js', 'utf8', function(){});
         fs.appendFile('generic-editor/scripts/coreplugins.js', 'org.ekstep.pluginframework.pluginManager.registerPlugin(' + JSON.stringify(manifest) + ',eval(\'' + plugin.replace(/'/g, "\\'") + '\'))' + '\n', function(){});
     });
     return gulp.src('plugins/**/plugin.min.js', {
