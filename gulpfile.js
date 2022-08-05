@@ -231,6 +231,8 @@ gulp.task('build', ['minify', 'inject', 'replace', 'packageCorePlugins', 'zip'])
 
 var corePlugins = [
     "org.ekstep.uploadcontent-1.5",
+    "org.ekstep.assetbrowser-1.3",
+    "org.ekstep.uploadlargecontent-1.0",
 ]
 
 gulp.task('minifyCorePlugins', function() {
@@ -300,14 +302,14 @@ gulp.task('packageCorePlugins', ["addDir", "minifyCorePlugins"], function() {
             manifest.editor.dependencies.forEach(function(dependency) {
                 var resource = '/content-plugins/' + plugin + '/' + dependency.src;
                 if (dependency.type == 'js') {
-                    fs.appendFile('generic-editor/scripts/coreplugins.js', "org.ekstep.pluginframework.resourceManager.loadExternalResource('" + resource + "', 'js')" + "\n");
+                    fs.appendFile('generic-editor/scripts/coreplugins.js', "org.ekstep.pluginframework.resourceManager.loadExternalResource('" + resource + "', 'js')" + "\n", function(){});
                 } else if (dependency.type == 'css') {
-                    fs.appendFile('generic-editor/scripts/coreplugins.js', "org.ekstep.pluginframework.resourceManager.loadExternalResource('" + resource + "', 'css')" + "\n");
+                    fs.appendFile('generic-editor/scripts/coreplugins.js', "org.ekstep.pluginframework.resourceManager.loadExternalResource('" + resource + "', 'css')" + "\n", function(){});
                 }
             });
         }
         var plugin = fs.readFileSync('plugins/' + plugin + '/editor/plugin.min.js', 'utf8');
-        fs.appendFile('generic-editor/scripts/coreplugins.js', 'org.ekstep.pluginframework.pluginManager.registerPlugin(' + JSON.stringify(manifest) + ',eval(\'' + plugin.replace(/'/g, "\\'") + '\'))' + '\n');
+        fs.appendFile('generic-editor/scripts/coreplugins.js', 'org.ekstep.pluginframework.pluginManager.registerPlugin(' + JSON.stringify(manifest) + ',eval(\'' + plugin.replace(/'/g, "\\'") + '\'))' + '\n', function(){});
     });
     return gulp.src('plugins/**/plugin.min.js', {
         read: false
