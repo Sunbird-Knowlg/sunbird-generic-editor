@@ -50,7 +50,6 @@ node() {
                         npm run plugin-build
                         npm run build
                         #gulp build
-                        npm run test
                     """
                 }
                 
