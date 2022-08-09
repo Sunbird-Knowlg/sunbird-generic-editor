@@ -39,6 +39,7 @@ node() {
                         export version_number=${branch_name}
                         export build_number=${commit_hash}
                         rm -rf generic-editor
+                        sudo apt-get install build-essential libpng-dev
                         node -v
                         npm -v
                         npm install
@@ -53,9 +54,9 @@ node() {
                     """
                 }
                 
-                stage('Publish_test_results') {
-               cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage/PhantomJS*/cobertura-coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false 
-            }
+            //     stage('Publish_test_results') {
+            //    cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage/PhantomJS*/cobertura-coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false 
+            // }
                 
                 stage('ArchiveArtifacts') {
                     sh """
