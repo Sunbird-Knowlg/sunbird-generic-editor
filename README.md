@@ -89,7 +89,8 @@ window.config = {
   ],
   corePlugins: [],
   corePluginMapping: {},
-  useProxyForURL: false
+  useProxyForURL: false,
+  cloudStorage: {}
 }
 ```
 
