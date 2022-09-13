@@ -35,23 +35,7 @@ node() {
                 echo "artifact_version: " + artifact_version
 
                 stage('Build') {
-                    sh """
-                        export version_number=${branch_name}
-                        export build_number=${commit_hash}
-                        rm -rf generic-editor
-                        sudo apt-get install build-essential libpng-dev
-                        node -v
-                        npm -v
-                        npm install
-                        cd app
-                        bower cache clean
-                        bower install --force
-                        cd ..
-                        gulp packageCorePlugins
-                        npm run plugin-build
-                        npm run build
-                        #gulp build
-                    """
+                    sh("bash ./build.sh  ${branch_name} ${commit_hash}")
                 }
                 
             //     stage('Publish_test_results') {
