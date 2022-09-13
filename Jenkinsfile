@@ -35,7 +35,8 @@ node() {
                 echo "artifact_version: " + artifact_version
 
                 stage('Build') {
-                    sh("bash ./build.sh  ${branch_name} ${commit_hash}")
+                    def run_testcase = false
+                    sh("bash ./build.sh  ${branch_name} ${commit_hash} ${run_testcase}")
                 }
                 
             //     stage('Publish_test_results') {
