@@ -17,6 +17,7 @@ node() {
                commit_hash = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                artifact_version = tag_name
                branch_name = tag_name.split('_')[0].split('\\.')[0] + "." + tag_name.split('_')[0].split('\\.')[1]
+               def run_testcase = true
                sh "git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins"
                     sh """
                         cd plugins
@@ -27,23 +28,7 @@ node() {
                 echo "artifact_version: " + artifact_version
 
           //      stage Build
-                    sh """
-                        export version_number=${branch_name}
-                        export build_number=${commit_hash}
-                        rm -rf generic-editor
-                        node -v
-                        npm -v
-                        npm install
-                        cd app
-                        bower cache clean
-                        bower install --force
-                        cd ..
-                        gulp packageCorePlugins
-                        npm run plugin-build
-                        npm run build
-                        #gulp build
-                        npm run test
-                    """
+                    sh("./build.sh ${branch_name} ${commit_hash} ${run_testcase}") 
            
                 
        //         stage Publish_test_results

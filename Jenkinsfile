@@ -20,7 +20,7 @@ node() {
                     sh "cd plugins && git checkout origin/${branch_name} -b ${branch_name}"
                 } else {
                     def scmVars = checkout scm
-                    checkout scm: [$class: 'GitSCM', branches: [[name: "refs/tags/${params.github_release_tag}"]], userRemoteConfigs: [[url: scmVars.GIT_URL]]]
+                    checkout scm: [$class: 'GitSCM', branches: [[name: "${params.github_release_tag}"]], userRemoteConfigs: [[url: scmVars.GIT_URL]]]
                     artifact_version = params.github_release_tag
                     commit_hash = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     branch_name = params.github_release_tag.split('_')[0].split('\\.')[0] + "." + params.github_release_tag.split('_')[0].split('\\.')[1]
@@ -35,23 +35,8 @@ node() {
                 echo "artifact_version: " + artifact_version
 
                 stage('Build') {
-                    sh """
-                        export version_number=${branch_name}
-                        export build_number=${commit_hash}
-                        rm -rf generic-editor
-                        sudo apt-get install build-essential libpng-dev
-                        node -v
-                        npm -v
-                        npm install
-                        cd app
-                        bower cache clean
-                        bower install --force
-                        cd ..
-                        gulp packageCorePlugins
-                        npm run plugin-build
-                        npm run build
-                        #gulp build
-                    """
+                    def run_testcase = false
+                    sh("bash ./build.sh  ${branch_name} ${commit_hash} ${run_testcase}")
                 }
                 
             //     stage('Publish_test_results') {
