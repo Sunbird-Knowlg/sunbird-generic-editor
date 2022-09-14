@@ -20,7 +20,7 @@ node() {
                     sh "cd plugins && git checkout origin/${branch_name} -b ${branch_name}"
                 } else {
                     def scmVars = checkout scm
-                    checkout scm: [$class: 'GitSCM', branches: [[name: "refs/tags/${params.github_release_tag}"]], userRemoteConfigs: [[url: scmVars.GIT_URL]]]
+                    checkout scm: [$class: 'GitSCM', branches: [[name: "${params.github_release_tag}"]], userRemoteConfigs: [[url: scmVars.GIT_URL]]]
                     artifact_version = params.github_release_tag
                     commit_hash = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     branch_name = params.github_release_tag.split('_')[0].split('\\.')[0] + "." + params.github_release_tag.split('_')[0].split('\\.')[1]
