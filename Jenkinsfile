@@ -35,7 +35,8 @@ node() {
                 echo "artifact_version: " + artifact_version
 
                 stage('Build') {
-                    def run_testcase = false
+                    run_testcase = false
+                    sh('chmod 777 build.sh')
                     sh("bash ./build.sh  ${branch_name} ${commit_hash} ${run_testcase}")
                 }
                 
