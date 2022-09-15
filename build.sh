@@ -15,6 +15,7 @@ nvm use $NODE_VERSION
 export version_number=$branch_name
 export build_number=$commit_hash
 rm -rf generic-editor
+sudo apt-get install build-essential libpng-dev
 node -v
 npm -v
 npm install
