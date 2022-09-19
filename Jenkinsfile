@@ -21,8 +21,8 @@ node() {
                 } else {
                     def scmVars = checkout scm
                     checkout scm: [$class: 'GitSCM', branches: [[name: "${params.github_release_tag}"]], userRemoteConfigs: [[url: scmVars.GIT_URL]]]
-                    artifact_version = params.github_release_tag
                     commit_hash = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                    artifact_version = params.github_release_tag + "_" + commit_hash
                     branch_name = params.github_release_tag.split('_')[0].split('\\.')[0] + "." + params.github_release_tag.split('_')[0].split('\\.')[1]
                     println(ANSI_BOLD + ANSI_YELLOW + "github_release_tag specified, building from github_release_tag: " + params.github_release_tag + ANSI_NORMAL)
                     sh "git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins"
@@ -35,7 +35,8 @@ node() {
                 echo "artifact_version: " + artifact_version
 
                 stage('Build') {
-                    def run_testcase = false
+                    run_testcase = false
+                    sh('chmod 777 build.sh')
                     sh("bash ./build.sh  ${branch_name} ${commit_hash} ${run_testcase}")
                 }
                 
