@@ -150,7 +150,7 @@ window.config = {
 4. Run `npm install` to install node modules.
 5. `cd app` and run `bower install` to install bower components
 6. Create a symlink to 'sunbird-content-plugins' (`ln -s ../sunbird-content-plugins plugins`) 
-> On Windows: use `mklink`
+>On Windows: use `mklink`
 7. Configure the genric editor [here](https://github.com/project-sunbird/sunbird-genric-editor#how-to-configure-the-sunbird-generic-editor)
 7. Run `node app`
 8. Open Chrome and visit this link: http://localhost:3000/app
