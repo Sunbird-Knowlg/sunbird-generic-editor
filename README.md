@@ -113,7 +113,6 @@ window.config = {
 ## Integration
 
 ```js
-
   openGenericEditor() {
     jQuery.fn.iziModal = iziModal;
     jQuery('#genericEditor').iziModal({
@@ -151,7 +150,6 @@ window.config = {
 
   
  >For sunbird-generic-editor demo please visit [here](https://staging.open-sunbird.org/workspace/content/create)   
-
 
 
 ## License
