@@ -6,7 +6,15 @@
 ## Introduction
 The generic editor is used to create contents which can be uploaded as files(H5P, epub, PDF, HTML, Youtube, Video).
 
-## Configuration
+## Step 1: Installation
+
+ Download the content editor using the following command: 
+```red
+Run npm i @project-sunbird/generic-editor
+```
+## Step 2: Configure the generic editor
+
+**Required configuration**
 
 ```js
 window.context = {
@@ -110,8 +118,7 @@ window.config = {
 | `plugins ` | It is a `array`, Array of plugins ex:`[{id:"org.sunbird.header",ver:"1.0",type:"plugin"}]`| NA |
 | `cloudStorage` |  It is `object` and which defines cloud storage configuration which contains presigned_headers for diff service provider for example: Azure, AWS | ``` cloudStorage: { presigned_headers: { 'x-ms-blob-type': 'BlockBlob' // This header is specific to azure storage provider. } } ``` | The default configuration can be overwrite by passing empty headers. ***For example:*** If you don't want to pass any headers for AWS than pass as empty headers as below: ``` cloudStorage: { presigned_headers: { } } ```
 
-## Integration
-
+## Step 3: Integration
 ```js
   openGenericEditor() {
     jQuery.fn.iziModal = iziModal;
@@ -135,14 +142,17 @@ window.config = {
     });
 ```
 
-## How to setup sunbird-generic-editor in local
+# How to setup sunbird-generic-editor in local
 1. Clone this sunbird-generic-editor repo from [here](https://github.com/project-sunbird/sunbird-generic-editor) 
 2. Clone the sunbird-content-plugins repo from [here](https://github.com/project-sunbird/sunbird-content-plugins) 
 3. Go to the root directory sunbird-generic-editor.
 4. Run `npm install` to install node modules.
 5. `cd app` and run `bower install` to install bower components
-6. Create a symlink to 'sunbird-content-plugins' (`ln -s ../sunbird-content-plugins plugins`)
+6. Create a symlink to 'sunbird-content-plugins' (`ln -s ../sunbird-content-plugins plugins`) 
 >On Windows: use `mklink`
+7. Configure the genric editor [here](https://github.com/project-sunbird/sunbird-genric-editor#how-to-configure-the-sunbird-generic-editor)
+7. Run `node app`
+8. Open Chrome and visit this link: http://localhost:3000/app
 
 
 ## ChangeLogs
