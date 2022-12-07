@@ -1,44 +1,67 @@
 version: 2.1
 jobs:
   build:
+    working_directory: ~/generic-editor
     docker:
-      - image: circleci/node:6.10-browsers
+      - image: circleci/node:10.0.0-browsers
         environment:
            version_number: $CIRCLE_BRANCH
            build_number: $CIRCLE_BUILD_NUM
     steps:
-      - checkout
+      - checkout:
+          path: ~/generic-editor
+
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       
       - run:
           name: clone plugins
           command: |
-            prnumber=$(echo $CI_PULL_REQUEST | awk -F'/' '{print $NF}')
-            prdata=$(curl -X GET -u $GITHUB_USER_TOKEN:x-oauth-basic https://api.github.com/repos/project-sunbird/sunbird-generic-editor/pulls/$prnumber)
+            if [ -z $CIRCLE_PR_NUMBER ]; then
+            target_branch=$CIRCLE_BRANCH
+            git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins -b $target_branch
+            else
+            prdata=$(curl -X GET -u $GITHUB_USER_TOKEN:x-oauth-basic https://api.github.com/repos/project-sunbird/sunbird-generic-editor/pulls/$CIRCLE_PR_NUMBER)
             target_branch=$(echo "${prdata}" | jq -r '.base.ref')
             git clone https://github.com/project-sunbird/sunbird-content-plugins.git plugins -b $target_branch
-      
-      - run: sudo npm install -g bower@1.8.0 grunt-cli@1.2.0 gulp@3.9.1 codacy-coverage
+            fi
+
+      - run: sudo npm install -g bower@1.8.0 grunt-cli@1.2.0 gulp@3.9.1
       - run: npm install
       - run: cd app && bower cache clean --allow-root
       - run: cd app && bower install --force --allow-root
-      #- run: gulp clone-plugins
       - run: gulp packageCorePlugins
       - run: npm run plugin-build
       - run: npm run build
       - run: npm run test
       
-      - run: cp ./coverage/PhantomJS*/cobertura-coverage.xml /tmp/
+      - run: mkdir -p /tmp/coverage && cp /home/circleci/generic-editor/coverage/lcov/PhantomJS\ 2.1.1\ \(Linux\ 0.0.0\)/lcov.info /tmp/coverage
       
       - store_artifacts:
-          path: /tmp/cobertura-coverage.xml
-          destination: cobertura-coverage.xml
-      
+          path: /tmp/coverage
+          destination: coverage
+
+      - run:
+          name: Install NVM
+          command: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh|bash'
+    
+      - run:
+          name: alter node version
+          command: 'source ~/.nvm/nvm.sh && nvm install 14 && nvm use 14 && nvm alias default 14 && node -v'
+
+      - run: 
+          name: Install sonar scanner
+          command: 'source ~/.nvm/nvm.sh && sudo npm install -g sonarqube-scanner'
+
+      - run: 
+          name: Sonar scanner
+          command: source ~/.nvm/nvm.sh && sonar-scanner -Dsonar.projectKey=project-sunbird_sunbird-generic-editor -Dsonar.organization=project-sunbird -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.cobertura.reportPath=/coverage/PhantomJS*/cobertura-coverage.xml -Dsonar.language=js
+            
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths: ./node_modules
       
+                
                 
 workflows:
   version: 2.1
