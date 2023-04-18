@@ -18,7 +18,7 @@ node() {
                     println(ANSI_BOLD + ANSI_YELLOW + "github_release_tag not specified, using the latest commit hash: " + commit_hash + ANSI_NORMAL)
                     sh "git clone https://github.com/ocisunbird/sunbird-content-plugins.git plugins"
                     sh "cd plugins && git checkout origin/${branch_name} -b ${branch_name}"
-                // } else {
+                // } else { 
                 //     def scmVars = checkout scm
                 //     checkout scm: [$class: 'GitSCM', branches: [[name: "${params.github_release_tag}"]], userRemoteConfigs: [[url: scmVars.GIT_URL]]]
                 //     commit_hash = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
