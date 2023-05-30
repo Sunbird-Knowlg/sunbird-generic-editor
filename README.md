@@ -144,7 +144,7 @@ window.config = {
 
 
 ## ChangeLogs
-   For changes logs please refer [here](https://github.com/project-sunbird/sunbird-generic  -editor/releases) 
+   For changes logs please refer [here](https://github.com/project-sunbird/sunbird-generic-editor/releases) 
 
   
  >For sunbird-generic-editor demo please visit [here](https://staging.open-sunbird.org/workspace/content/create)   
