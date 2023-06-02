@@ -134,7 +134,7 @@ window.config = {
 ```
 
 ## How to setup sunbird-generic-editor in local
-1. Clone this sunbird-generic-editor repo from [here](https://github.com/project-sunbird/sunbird-generic-editor) 
+1. Clone this sunbird-generic-editor repo from [here](https://github.com/project-sunbird/sunbird -generic-editor) 
 2. Clone the sunbird-content-plugins repo from [here](https://github.com/project-sunbird/sunbird-content-plugins) 
 3. Go to the root directory sunbird-generic-editor.
 4. Run `npm install` to install node modules.
