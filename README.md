@@ -134,18 +134,17 @@ window.config = {
 ```
 
 ## How to setup sunbird-generic-editor in local
-1. Clone this sunbird-generic-editor repo from [here](https://github.com/project-sunbird/sunbird-generic-editor) 
+1. Clone this sunbird-generic-editor repo from [here](https://github.com/project-sunbird/sunbird -generic-editor) 
 2. Clone the sunbird-content-plugins repo from [here](https://github.com/project-sunbird/sunbird-content-plugins) 
-3. Go to the root directory sunbird-generic-editor.
-4. Run `npm install` to install node modules.
+3. Go to the root directory of sunbird-generic-editor.
+4. Run `yarn install` to install node modules.
 5. `cd app` and run `bower install` to install bower components
 6. Create a symlink to 'sunbird-content-plugins' (`ln -s ../sunbird-content-plugins plugins`)
 >On Windows: use `mklink`
 
 
 ## ChangeLogs
-   For changes logs please refer [here](https://github.com/project-sunbird/sunbird-generic  -editor/releases) 
-
+   For changes logs please refer [here](https://github.com/project-sunbird/sunbird-generic-editor/releases) 
   
  >For sunbird-generic-editor demo please visit [here](https://staging.open-sunbird.org/workspace/content/create)   
 
