@@ -116,7 +116,7 @@ window.config = {
 | `pluginRepo ` | It is a `string`, From which location plugins should load  | /plugins  |
 | `dispatcher ` | It is a `string`,Where the telemetry should log ex(console, piwik, library, local) | console |
 | `plugins ` | It is a `array`, Array of plugins ex:`[{id:"org.sunbird.header",ver:"1.0",type:"plugin"}]`| NA |
-| `cloudStorage` |  It is `object` and which defines cloud storage configuration which contains presigned_headers for diff service provider for example: Azure, AWS | ``` cloudStorage: { presigned_headers: { 'x-ms-blob-type': 'BlockBlob' // This header is specific to azure storage provider. } } ``` | The default configuration can be overwrite by passing empty headers. ***For example:*** If you don't want to pass any headers for AWS than pass as empty headers as below: ``` cloudStorage: { presigned_headers: { } } ```
+| `cloudStorage` |  It is `object` and which defines cloud storage configuration which contains provider & presigned_headers for diff service provider for example: Azure, AWS | ``` cloudStorage: { provider: azure, presigned_headers: { 'x-ms-blob-type': 'BlockBlob' // This header is specific to azure storage provider. } } ``` | The default configuration can be overwrite by passing empty headers. ***For example:*** If you don't want to pass any headers for AWS than pass as empty headers as below: ``` cloudStorage: { provider: azure, presigned_headers: { } } ```
 
 ## Step 3: Integration
 ```js
