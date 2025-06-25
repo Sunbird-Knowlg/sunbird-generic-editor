@@ -1,5 +1,5 @@
 // this plugin is used to make all rules default to warnings
-equire('eslint-plugin-only-warn');
+require('eslint-plugin-only-warn');
 
 module.exports = {
   extends: 'standard',
