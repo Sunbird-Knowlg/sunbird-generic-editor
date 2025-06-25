@@ -1,0 +1,41 @@
+name: Publish Sunbird-generic-editor to NPM
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Install global dependencies
+        run: |
+          npm install -g bower@1.8.0 grunt-cli@1.2.0 gulp@3.9.1
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Install bower dependencies
+        working-directory: app
+        run: |
+          bower cache clean --allow-root
+          bower install --force --allow-root
+
+      - name: Build NPM package
+        run: npm run build-npm-pkg
+
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} 
