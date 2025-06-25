@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: '14'
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Install global dependencies
@@ -25,6 +25,10 @@ jobs:
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
+        env:
+          PHANTOMJS_PLATFORM: linux
+          PHANTOMJS_ARCH: x64
+          TMPDIR: /tmp
 
       - name: Install bower dependencies
         working-directory: app
