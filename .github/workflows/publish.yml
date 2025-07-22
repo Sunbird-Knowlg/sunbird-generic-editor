@@ -62,7 +62,8 @@ jobs:
           npm install gulp-gzip --save-dev
           npm run build-npm-pkg
           ls -l
-          cat generic-editor
+          cd generic-editor
+          ls -l
 
        # --- Upload to Google Cloud Storage ---
       # - name: Setup Google Cloud SDK
