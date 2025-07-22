@@ -88,6 +88,6 @@ jobs:
               --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
               --account-key "${{ secrets.AZURE_STORAGE_KEY }}" \
               --destination "${{ vars.AZURE_CONTAINER }}/generic-editor-test" \
-              --source content-editor \
+              --source generic-editor \
               --overwrite \
               --content-cache-control "public, max-age=2592000"
