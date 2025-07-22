@@ -64,6 +64,7 @@ jobs:
           ls -l
           cd generic-editor
           ls -l
+          cat index.html
 
        # --- Upload to Google Cloud Storage ---
       # - name: Setup Google Cloud SDK
