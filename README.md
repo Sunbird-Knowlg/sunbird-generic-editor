@@ -195,7 +195,7 @@ Note: The secrets and variables should be set in Github UI (`settings/secrets an
 
 For any changes to the workflow, update the file `.github/workflows/pull-request.yml` accordingly.
 
-# Build and Upload Content Editor Workflow
+# Build and Upload Generic Editor Workflow
 
 **Workflow Name:** `Publish Sunbird-generic-editor to blob`
 
