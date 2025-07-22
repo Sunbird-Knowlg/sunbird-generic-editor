@@ -57,8 +57,9 @@ jobs:
           bower cache clean --allow-root
           bower install --force --allow-root
 
-      - name: Build NPM package
+      - name: Build and package
         run: |
+          npm install gulp-gzip --save-dev
           npm run build-npm-pkg
           ls -l
 
