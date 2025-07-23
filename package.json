@@ -25,12 +25,14 @@
     "css-tree": "1.0.0-alpha.29",
     "csso": "3.5.1",
     "cssnano": "4.1.10",
-    "eslint": "^5.6.0",
+    "eslint": "^8.57.1",
     "global": "^4.4.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-only-warn": "^1.0.4",
     "expose-loader": "^0.7.5",
     "express-http-proxy": "^1.2.0",
     "extract": "^1.0.0",
@@ -105,7 +107,8 @@
     "plugin-build": "webpack --config webpack.plugin.config.js",
     "build-editor": "npm run test && npm run collection-plugins && npm run build",
     "test": "karma start karmaconf.js",
-    "build-npm-pkg": "gulp packageCorePlugins && npm run plugin-build && webpack --env.channel=NPM_PACKAGE && cd generic-editor && gulp copystyleImages && gulp clean && gulp injectrenamedfiles"
+    "build-npm-pkg": "gulp packageCorePlugins && npm run plugin-build && webpack --env.channel=NPM_PACKAGE && cd generic-editor && gulp copystyleImages && gulp clean && gulp injectrenamedfiles",
+    "lint": "eslint . --quiet"
   },
   "repository": {
     "type": "git",
