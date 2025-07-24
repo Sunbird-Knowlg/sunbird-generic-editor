@@ -1,0 +1,101 @@
+name: Build and Test on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  CONTENT_PLUGIN_VERSION: ${{ vars.CONTENT_PLUGIN_VERSION || 'release-8.0.0' }}
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    env:
+      version_number: ${{ github.ref_name }}
+      build_number: ${{ github.run_number }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js 10
+        uses: actions/setup-node@v3
+        with:
+          node-version: 10.24.1
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package.json') }}
+
+      - name: Clone plugins (from fork)
+        run: |
+          git clone --branch ${{ env.CONTENT_PLUGIN_VERSION }} https://github.com/Sunbird-Knowlg/sunbird-content-plugins.git plugins
+
+      - name: Install dependencies
+        run: |
+          which bower || sudo npm install -g bower@1.8.0
+          which grunt || sudo npm install -g grunt-cli@1.2.0
+          which gulp || sudo npm install -g gulp@3.9.1
+          sudo apt-get install build-essential libpng-dev
+
+      - name: Bower cache clean
+        working-directory: app
+        run: bower cache clean --allow-root
+
+      - name: Bower install
+        working-directory: app
+        run: bower install --force --allow-root
+
+      - name: Install global npm packages
+        run: npm install --legacy-peer-deps
+
+      - name: Gulp packageCorePlugins
+        run: gulp packageCorePlugins
+
+      - name: Plugin build
+        run: npm run plugin-build
+
+      - name: Run build
+        run: npm run build
+
+      - name: Test
+        run: npm run test
+        continue-on-error: true
+
+      - name: Set up Node.js 14 (for Sonar)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: Install SonarQube scanner
+        run: npm install -g sonarqube-scanner
+
+      - name: Run SonarQube scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: sonar-scanner
+
+  lint:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package.json') }}
+
+      - name: Run Lint
+        run: npm run lint

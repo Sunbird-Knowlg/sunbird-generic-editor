@@ -170,3 +170,27 @@ We use [SemVer](https://semver.org/) for versioning. For the versions available,
 
 ## Any Issues?
 We have an open and active [issue tracker](https://project-sunbird.atlassian.net/issues/). Please report any issues.
+
+# GitHub Actions
+
+## Build and Test on Pull Request
+
+This GitHub Actions workflow runs **build, test, and lint checks** automatically when a pull request is opened against any branch.
+
+### When It Runs
+
+- **Trigger**: On every `pull_request` to any branch (`'**'`)
+
+### Prerequisites Before Triggering
+
+Make sure the following are set up **before** opening a pull request:
+
+### Secrets
+`SONAR_TOKEN`: For SonarQube authentication 
+
+### Repository Variables
+`CONTENT_PLUGIN_VERSION`: Have to specify the branch or tag you want fetch. By default it will take `release-8.0.0`
+
+Note: The secrets and variables should be set in Github UI (`settings/secrets and variables/actions`).
+
+For any changes to the workflow, update the file `.github/workflows/build-test.yml` accordingly.
