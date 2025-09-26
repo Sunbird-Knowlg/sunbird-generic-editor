@@ -40,7 +40,7 @@ jobs:
 
       - name: Clone content plugins
         run: |
-          git clone https://github.com/Sunbird-Knowlg/sunbird-content-plugins.git plugins -b ${{ github.ref_name }}
+          git clone https://github.com/sanketika-labs/sunbird-content-plugins.git plugins -b ${{ github.ref_name }}
 
       - name: Install global dependencies
         run: |
