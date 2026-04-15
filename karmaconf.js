@@ -56,7 +56,7 @@ module.exports = function(config) {
             'karma-jasmine',
             'karma-jasmine-matchers',
             'karma-coverage',
-            'karma-phantomjs-launcher',
+            'karma-chrome-launcher',
             'karma-mocha-reporter'
         ],
 
@@ -125,7 +125,7 @@ module.exports = function(config) {
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: [
-            "PhantomJS"
+            "ChromeHeadless"
         ],
 
         browserNoActivityTimeout: 100000,
