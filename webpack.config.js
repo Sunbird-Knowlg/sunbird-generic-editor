@@ -36,7 +36,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
 const OnBuildSuccess = require('on-build-webpack');
-const extract = require('extract-zip');
+const extract = require('extract');
 const {
     exec
 } = require('child_process');
@@ -266,8 +266,7 @@ module.exports = (env, argv) => {
                     },
                     {
                         from: './generic-editor/scripts/coreplugins.js',
-                        to: './',
-                        flatten: true
+                        to: './[name][ext]'
                     },
                 ]
             }),
@@ -361,16 +360,12 @@ module.exports = (env, argv) => {
 
 
 function build_npm_package() {
-    extract(BUILD_FOLDER_NAME, {
-        dir: path.resolve(__dirname, NPM_BUILD_FOLDER_NAME)
-    }, function (err, res) {
-        if (err) {
-            console.error("Fails to extract", err)
-            return
-        } else {
-            console.log("success", res);
+    extract(BUILD_FOLDER_NAME, path.resolve(__dirname, NPM_BUILD_FOLDER_NAME))
+        .then(function() {
             cpy(['./package.json', './README.md'], path.resolve(__dirname, NPM_BUILD_FOLDER_NAME));
             console.log(`NPM ${NPM_BUILD_FOLDER_NAME} package is Ready!!!, Please wait we are updating index.html file`);
-        }
-    })
+        })
+        .catch(function(err) {
+            console.error("Fails to extract", err);
+        });
 }
