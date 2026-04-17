@@ -3,6 +3,12 @@
  * @version webpack 5
  */
 
+// serialize-javascript@7.x uses bare `crypto` global which is only auto-available
+// in Node.js 19+. Polyfill it for Node.js 18.x compatibility.
+if (typeof crypto === 'undefined') {
+    global.crypto = require('crypto').webcrypto;
+}
+
 const ENVIRONMENT = process.env.NODE_ENV;
 const BUILD_NUMBER = process.env.build_number;
 const EDITOR_VER = process.env.version_number;
@@ -35,7 +41,6 @@ const glob = require('glob-all');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
-const OnBuildSuccess = require('on-build-webpack');
 const extract = require('extract');
 const {
     exec
@@ -128,7 +133,8 @@ module.exports = (env, argv) => {
                 'angular': path.resolve(`${BASE_PATH}app/bower_components/angular/angular.js`),
                 'Fingerprint2': path.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/fingerprint2.js`),
                 'async': path.resolve(`${BASE_PATH}app/bower_components/async/dist/async.min.js`),
-                'EventBus': path.resolve(`${BASE_PATH}/app/libs/eventbus.min.js`)
+                'EventBus': path.resolve(`${BASE_PATH}/app/libs/eventbus.min.js`),
+                'UAParser': path.resolve(`${BASE_PATH}/app/libs/ua-parser.min.js`)
             }
         },
         module: {
@@ -226,7 +232,10 @@ module.exports = (env, argv) => {
                         {
                             loader: 'css-loader',
                             options: {
-                                sourceMap: false
+                                sourceMap: false,
+                                url: {
+                                    filter: (url) => !url.startsWith('data:')
+                                }
                             }
                         }
                     ]
@@ -266,7 +275,8 @@ module.exports = (env, argv) => {
                     },
                     {
                         from: './generic-editor/scripts/coreplugins.js',
-                        to: './[name][ext]'
+                        to: './[name][ext]',
+                        noErrorOnMissing: true
                     },
                 ]
             }),
@@ -309,11 +319,15 @@ module.exports = (env, argv) => {
                     forceZip64Format: false,
                 },
             }),
-            new OnBuildSuccess(function (stats) {
-                if (env && env.channel && env.channel.toUpperCase() === 'NPM_PACKAGE') {
-                    build_npm_package();
+            {
+                apply(compiler) {
+                    compiler.hooks.done.tap('OnBuildSuccess', function() {
+                        if (env && env.channel && env.channel.toUpperCase() === 'NPM_PACKAGE') {
+                            build_npm_package();
+                        }
+                    });
                 }
-            }),
+            },
         ],
         optimization: {
             minimizer: [
