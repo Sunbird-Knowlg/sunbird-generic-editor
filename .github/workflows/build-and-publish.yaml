@@ -6,7 +6,7 @@ on:
       - '*'
 
 env:
-      NODE_VERSION: 10.24.1
+      NODE_VERSION: 18.20.8
       version_number: ${{ github.ref_name }}
       build_number: ${{ github.run_number }}
       CLOUD_PROVIDER: ${{ vars.CLOUD_PROVIDER }}
