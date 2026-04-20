@@ -69,7 +69,7 @@ function X2JS(config) {
     // Hello IE8-
     if (typeof String.prototype.trim !== 'function') {
       String.prototype.trim = function() {
-        return this.replace(/^\s+|^\n+|(\s|\n)+$/g, '');
+        return this.replace(/^\s+|\s+$/g, '');
       }
     }
     if (typeof Date.prototype.toISOString !== 'function') {
@@ -101,7 +101,7 @@ function X2JS(config) {
   }
 
   function unescapeXmlChars(str) {
-    return str.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&#x2F;/g, '\/');
+    return str.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&#x2F;/g, '\/').replace(/&amp;/g, '&');
   }
 
   function toArrayAccessForm(obj, childName, path) {
