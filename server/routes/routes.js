@@ -6,7 +6,6 @@
  * @author Santhosh Vasabhaktula <santhosh@ilimi.in>
  */
 
-var request = require('request');
 var fs = require('fs');
 
 

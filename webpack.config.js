@@ -1,7 +1,13 @@
 /**
- * @description Webpack config file to minify the generic editor script, style files 
- * @version webpack 4
+ * @description Webpack config file to minify the generic editor script, style files
+ * @version webpack 5
  */
+
+// serialize-javascript@7.x uses bare `crypto` global which is only auto-available
+// in Node.js 19+. Polyfill it for Node.js 18.x compatibility.
+if (typeof crypto === 'undefined') {
+    global.crypto = require('crypto').webcrypto;
+}
 
 const ENVIRONMENT = process.env.NODE_ENV;
 const BUILD_NUMBER = process.env.build_number;
@@ -28,16 +34,14 @@ const NPM_BUILD_FOLDER_NAME = 'generic-editor'
 
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const glob = require('glob-all');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const OnBuildSuccess = require('on-build-webpack');
-const extract = require('extract-zip');
+const extractZip = require('extract-zip');
 const {
     exec
 } = require('child_process');
@@ -46,7 +50,7 @@ const gulp = require('gulp');
 
 
 /**
- * External files 
+ * External files
  */
 const VENDOR = [
     "./app/libs/please-wait.min.js",
@@ -91,7 +95,7 @@ const APP_STYLE = [
     "./app/libs/spinkit.css",
     "./app/libs/please-wait.css",
     "./app/libs/ng-tags-input.css",
-    "./generic-editor/scripts/plugin-vendor.min.css", // Plugins css files (Which is generated while packaging coreplugins  from webpack.plugin.config.js)
+    "./generic-editor/scripts/plugin-vendor.min.css", // Plugins css files
     './app/styles/fonts/notosans-bengali/notosansbengali.css',
     './app/styles/fonts/notosans-malayalam/notosansmalayalam.css',
     './app/styles/fonts/notosans-gurmukhi/notosansgurmukhi.css',
@@ -129,7 +133,7 @@ module.exports = (env, argv) => {
                 'angular': path.resolve(`${BASE_PATH}app/bower_components/angular/angular.js`),
                 'Fingerprint2': path.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/fingerprint2.js`),
                 'async': path.resolve(`${BASE_PATH}app/bower_components/async/dist/async.min.js`),
-                'EventBus': path.resolve(`${BASE_PATH}app/libs/eventbus.min.js`),
+                'EventBus': path.resolve(`${BASE_PATH}/app/libs/eventbus.min.js`),
                 'UAParser': path.resolve(`${BASE_PATH}/app/libs/ua-parser.min.js`)
             }
         },
@@ -147,65 +151,78 @@ module.exports = (env, argv) => {
                     test: require.resolve(`${BASE_PATH}app/bower_components/jquery/dist/jquery.min.js`),
                     use: [{
                         loader: 'expose-loader',
-                        options: 'jQuery'
+                        options: {
+                            exposes: 'jQuery'
+                        }
                     }]
                 },
                 {
                     test: require.resolve(`${BASE_PATH}app/bower_components/jquery/dist/jquery.min.js`),
                     use: [{
                         loader: 'expose-loader',
-                        options: '$'
+                        options: {
+                            exposes: '$'
+                        }
                     }]
                 },
                 {
                     test: require.resolve(`${BASE_PATH}app/libs/eventbus.min.js`),
                     use: [{
                         loader: 'expose-loader',
-                        options: 'EventBus'
+                        options: {
+                            exposes: 'EventBus'
+                        }
                     }]
                 },
                 {
                     test: require.resolve(`${BASE_PATH}app/libs/please-wait.min.js`),
                     use: [{
                         loader: 'expose-loader',
-                        options: 'pleaseWait'
+                        options: {
+                            exposes: 'pleaseWait'
+                        }
                     }]
                 },
                 {
                     test: require.resolve('./app/bower_components/async/dist/async.min.js'),
                     use: [{
                         loader: 'expose-loader',
-                        options: 'async'
+                        options: {
+                            exposes: 'async'
+                        }
                     }]
                 },
                 {
                     test: /\.(html)$/,
                     use: {
-                        loader: 'html-loader',
-                        options: {
-                            attrs: [':data-src']
-                        }
+                        loader: 'html-loader'
                     }
                 },
                 {
                     test: require.resolve(`${BASE_PATH}app/bower_components/fingerprintjs2/fingerprint2.js`),
                     use: [{
                         loader: 'expose-loader',
-                        options: 'Fingerprint2'
+                        options: {
+                            exposes: 'Fingerprint2'
+                        }
                     }]
                 },
                 {
-                    test: require.resolve(`${BASE_PATH}app/libs/ua-parser.min.js`),
+                    test: require.resolve(`${BASE_PATH}/app/libs/ua-parser.min.js`),
                     use: [{
                         loader: 'expose-loader',
-                        options: 'UAParser'
+                        options: {
+                            exposes: 'UAParser'
+                        }
                     }]
                 },
                 {
                     test: require.resolve(`${BASE_PATH}app/bower_components/uuid/index.js`),
                     use: [{
                         loader: 'expose-loader',
-                        options: 'UUID'
+                        options: {
+                            exposes: 'UUID'
+                        }
                     }]
                 },
                 {
@@ -216,10 +233,8 @@ module.exports = (env, argv) => {
                             loader: 'css-loader',
                             options: {
                                 sourceMap: false,
-                                minimize: false,
-                                "preset": "advanced",
-                                discardComments: {
-                                    removeAll: true
+                                url: {
+                                    filter: (url) => !url.startsWith('data:')
                                 }
                             }
                         }
@@ -227,78 +242,43 @@ module.exports = (env, argv) => {
                 },
                 {
                     test: /\.(gif|png|jpe?g|svg)$/i,
-                    use: [
-                        'file-loader',
-                        {
-                            loader: 'url-loader',
-                            options: {
-                                limit: 50, //it's important
-                                outputPath: './images',
-                                name: '[name].[ext]',
-                            }
-                        },
-                    ],
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'images/[name][ext]'
+                    }
                 },
                 {
-                    test: /\.(woff|woff2|eot|ttf|otf|svg|png)$/,
-                    use: [{
-                        loader: 'file-loader',
-                        options: {
-                            name: '[name].[ext]',
-                            outputPath: './fonts/',
-                            limit: 10000,
-                            fallback: 'responsive-loader'
-                        }
-                    }]
+                    test: /\.(woff|woff2|eot|ttf|otf)$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'fonts/[name][ext]'
+                    }
                 },
             ]
         },
         plugins: [
-            new CleanWebpackPlugin(['dist']),
-            new UglifyJsPlugin({
-                cache: false,
-                parallel: true,
-                uglifyOptions: {
-                    compress: {
-                        dead_code: true,
-                        drop_console: false,
-                        global_defs: {
-                            DEBUG: true
-                        },
-                        passes: 1,
+            new CleanWebpackPlugin(),
+            // copy the index.html and templates to editor folder
+            new CopyWebpackPlugin({
+                patterns: [
+                    {
+                        from: './app/index.html',
+                        to: './[name][ext]'
                     },
-                    ecma: 5,
-                    mangle: true
-                },
-                sourceMap: true
-            }),
-            // copy the index.html and templated to eidtor filder
-            new CopyWebpackPlugin([{
-                    from: './app/index.html',
-                    to: './[name].[ext]',
-                    toType: 'template'
-                },
-                {
-                    from: './deploy/gulpfile.js',
-                    to: './'
-                },
-                {
-                    from: './deploy/package.json',
-                    to: './'
-                },
-                {
-                    from: './generic-editor/scripts/coreplugins.js',
-                    to: './',
-                    flatten: true
-                },
-            ]),
-            new ImageminPlugin({
-                test: /\.(jpe?g|png|gif|svg)$/i,
-                name: '[name].[ext]',
-                outputPath: './images',
-                pngquant: {
-                    quality: '65-70'
-                }
+                    {
+                        from: './deploy/gulpfile.js',
+                        to: './'
+                    },
+                    {
+                        from: './deploy/package.json',
+                        to: './'
+                    },
+                    {
+                        from: './generic-editor/scripts/coreplugins.js',
+                        to: './[name][ext]',
+                        noErrorOnMissing: true
+                    },
+                ]
             }),
             new MiniCssExtractPlugin({
                 filename: `[name].min.${VERSION}.css`,
@@ -310,19 +290,7 @@ module.exports = (env, argv) => {
                 "window.async": 'async',
                 EventBus: "EventBus"
             }),
-            new webpack.optimize.OccurrenceOrderPlugin(),
             new webpack.HotModuleReplacementPlugin(),
-            new OptimizeCssAssetsPlugin({
-                assetNameRegExp: /\.optimize\.css$/g,
-                cssProcessor: require('cssnano'),
-                cssProcessorOptions: {
-                    safe: true,
-                    discardComments: {
-                        removeAll: true
-                    }
-                },
-                canPrint: true
-            }),
             new ZipPlugin({
                 path: path.join(__dirname, '.'),
                 filename: BUILD_FOLDER_NAME,
@@ -351,13 +319,39 @@ module.exports = (env, argv) => {
                     forceZip64Format: false,
                 },
             }),
-            new OnBuildSuccess(function (stats) {
-                if (env && env.channel.toUpperCase() === 'NPM_PACKAGE') {
-                    build_npm_package();
+            {
+                apply(compiler) {
+                    compiler.hooks.done.tap('OnBuildSuccess', function() {
+                        if (env && env.channel && env.channel.toUpperCase() === 'NPM_PACKAGE') {
+                            build_npm_package();
+                        }
+                    });
                 }
-            }),
+            },
         ],
         optimization: {
+            minimizer: [
+                new TerserPlugin({
+                    parallel: true,
+                    terserOptions: {
+                        compress: {
+                            dead_code: true,
+                            drop_console: false,
+                            global_defs: {
+                                DEBUG: true
+                            },
+                            passes: 1,
+                        },
+                        ecma: 5,
+                        mangle: true
+                    }
+                }),
+                new CssMinimizerPlugin({
+                    minimizerOptions: {
+                        preset: ['default', { discardComments: { removeAll: true } }]
+                    }
+                })
+            ],
             splitChunks: {
                 chunks: 'async',
                 minSize: 30000,
@@ -365,7 +359,6 @@ module.exports = (env, argv) => {
                 maxAsyncRequests: 5,
                 maxInitialRequests: 3,
                 automaticNameDelimiter: '~',
-                name: true,
                 cacheGroups: {
                     styles: {
                         name: 'style',
@@ -380,17 +373,21 @@ module.exports = (env, argv) => {
 };
 
 
+const fs = require('fs');
+
 function build_npm_package() {
-    extract(BUILD_FOLDER_NAME, {
-        dir: path.resolve(__dirname, NPM_BUILD_FOLDER_NAME)
-    }, function (err, res) {
-        if (err) {
-            console.error("Fails to extract", err)
-            return
-        } else {
-            console.log("success", res);
-            cpy(['./package.json', './README.md'], path.resolve(__dirname, NPM_BUILD_FOLDER_NAME));
-            console.log(`NPM ${NPM_BUILD_FOLDER_NAME} package is Ready!!!, Please wait we are updating index.html file`);
-        }
-    })
+    const destDir = path.resolve(__dirname, NPM_BUILD_FOLDER_NAME);
+    extractZip(path.resolve(__dirname, BUILD_FOLDER_NAME), { dir: destDir })
+        .then(function() {
+            ['package.json', 'README.md'].forEach(function(file) {
+                const src = path.resolve(__dirname, file);
+                if (fs.existsSync(src)) {
+                    fs.copyFileSync(src, path.join(destDir, file));
+                }
+            });
+            console.log(`NPM ${NPM_BUILD_FOLDER_NAME} package is Ready!!!`);
+        })
+        .catch(function(err) {
+            console.error("Fails to extract", err);
+        });
 }
