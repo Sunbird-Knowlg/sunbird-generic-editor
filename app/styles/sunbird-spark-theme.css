@@ -673,3 +673,64 @@ h6 { font-size: var(--spark-font-size-sm)  !important; font-weight: 500 !importa
   font-family: var(--spark-font) !important;
   color: var(--spark-charcoal) !important;
 }
+
+
+/* ============================================================
+   21. REMAINING SEMANTIC UI BLUE OVERRIDES
+   ============================================================ */
+
+/* Blue-variant buttons (Semantic UI .ui.blue.button) */
+.ui.blue.button,
+.ui.button.blue {
+  background-color: var(--spark-brick) !important;
+  color: #ffffff !important;
+}
+
+.ui.blue.button:hover,
+.ui.button.blue:hover {
+  background-color: var(--spark-brick-dark) !important;
+}
+
+/* Logo column in header (compiled from $primaryColor in header.sass) */
+.custom-1-wide {
+  background-color: var(--spark-brick) !important;
+}
+
+/* Icon hover in toolbar (compiled from header.sass) */
+.icon-box:hover {
+  background-color: rgba(172, 81, 57, 0.08) !important;
+}
+
+/* Semantic UI checkbox/radio checked states (driven by @primaryColor in site.variables) */
+.ui.checkbox input:checked ~ label:before,
+.ui.radio.checkbox input:checked ~ label:before {
+  border-color: var(--spark-brick) !important;
+  background-color: var(--spark-brick) !important;
+}
+
+.ui.checkbox input:checked ~ label:after {
+  color: #ffffff !important;
+}
+
+.ui.radio.checkbox input:checked ~ label:after {
+  background-color: #ffffff !important;
+}
+
+.ui.checkbox input:focus ~ label:before {
+  border-color: var(--spark-brick) !important;
+  box-shadow: 0 0 0 2px rgba(172, 81, 57, 0.2) !important;
+}
+
+/* Semantic UI blue-colored links */
+a {
+  color: var(--spark-brick) !important;
+}
+
+a:hover {
+  color: var(--spark-brick-dark) !important;
+}
+
+/* Semantic UI progress bar */
+.ui.progress .bar {
+  background-color: var(--spark-brick) !important;
+}
