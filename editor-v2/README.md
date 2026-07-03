@@ -141,30 +141,6 @@ You can also override per-load via URL query params: `?contentId=do_123&lang=hi&
    In `npm run dev` only `/action` is proxied, so to see previews either proxy those paths too
    or set `previewUrl` to a fully-qualified hosted URL.
 
-### Auth (cross-origin / non-portal hosts)
-
-Same-origin (behind the portal proxy) rides on the browser session cookie — nothing extra.
-When embedding against a **different** origin, pass credentials explicitly:
-
-```tsx
-<ContentEditor
-  context={{ /* uid, sid, did, channel, pdata, user, framework */ }}
-  config={{
-    baseUrl: 'https://dev.sunbirded.org',
-    apiSlug: '/api',                              // gateway slug if not /action
-    headers: {
-      Authorization: `Bearer ${apiKey}`,         // API gateway token
-      'x-authenticated-user-token': userToken,   // keycloak user token
-      'X-Channel-Id': channelId,
-    },
-  }}
-/>
-```
-
-`config.headers` are merged into every request; `config.cloudStorage.presignedHeaders`
-tune the cloud PUT (default Azure `x-ms-blob-type: BlockBlob`).
-
----
 
 ## Capabilities
 
