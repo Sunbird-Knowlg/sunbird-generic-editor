@@ -39,6 +39,11 @@ export class TelemetryService {
     this.objectId = id;
   }
 
+  /** Swap the runtime context (uid/sid/channel/pdata) if the host changes it. */
+  updateContext(context: EditorContext): void {
+    this.context = context;
+  }
+
   private buildEvent(eid: TelemetryEid, edata: Record<string, unknown>): TelemetryEvent {
     return {
       eid,
@@ -61,7 +66,12 @@ export class TelemetryService {
   }
 
   private emit(event: TelemetryEvent): void {
-    this.onEvent(event);
+    // A host callback throwing must never abort the UI action that emitted the event.
+    try {
+      this.onEvent(event);
+    } catch {
+      /* swallow — telemetry is fire-and-forget, like flush() */
+    }
     if (this.sink) {
       this.batch.push(event);
       if (this.batch.length >= this.batchSize) this.flush();

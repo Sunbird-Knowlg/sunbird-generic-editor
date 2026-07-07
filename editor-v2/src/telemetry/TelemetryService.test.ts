@@ -53,6 +53,11 @@ describe('TelemetryService', () => {
     expect(sink.mock.calls[0][0]).toHaveLength(2);
   });
 
+  it('a throwing onEvent callback never propagates into the caller (negative)', () => {
+    const svc = new TelemetryService(ctx, () => { throw new Error('host blew up'); });
+    expect(() => svc.interact('click', 'x', 'save')).not.toThrow();
+  });
+
   it('flushes remaining events on end/destroy (negative: no sink is a no-op)', () => {
     const sink = vi.fn().mockResolvedValue(undefined);
     const svc = new TelemetryService(ctx, () => {}, sink, 100);

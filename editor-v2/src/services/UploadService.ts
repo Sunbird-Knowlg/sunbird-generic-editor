@@ -145,17 +145,29 @@ export class UploadService {
       });
     }
 
-    /* Commit the block list */
+    /* Commit the block list — retried like each chunk PUT, so a late transient failure
+       doesn't force a full re-upload of an otherwise-complete large file. */
     const xml =
       '<?xml version="1.0" encoding="utf-8"?><BlockList>' +
       ids.map((id) => `<Latest>${id}</Latest>`).join('') +
       '</BlockList>';
-    const commit = await fetch(`${presignedUrl}&comp=blocklist`, {
-      method: 'PUT',
-      headers: { 'x-ms-blob-content-type': mimeType, 'Content-Type': 'text/plain; charset=UTF-8' },
-      body: xml,
-    });
-    if (!commit.ok) throw new Error(`Block list commit failed (${commit.status})`);
+    const commitUrl = `${presignedUrl}&comp=blocklist`;
+    let commitAttempt = 0;
+    for (;;) {
+      try {
+        const commit = await fetch(commitUrl, {
+          method: 'PUT',
+          headers: { 'x-ms-blob-content-type': mimeType, 'Content-Type': 'text/plain; charset=UTF-8' },
+          body: xml,
+        });
+        if (commit.ok) break;
+        throw new Error(`Block list commit failed (${commit.status})`);
+      } catch (err) {
+        commitAttempt += 1;
+        if (commitAttempt >= CHUNK_RETRY_LIMIT) throw err;
+        await sleep(CHUNK_RETRY_DELAY_MS);
+      }
+    }
     onProgress?.({ percent: 100, bytesUploaded: total, totalBytes: total });
   }
 
@@ -198,14 +210,24 @@ export class UploadService {
       credentials: 'same-origin',
       body: form,
     });
-    const data = await resp.json().catch(() => ({}));
-    if (!resp.ok || (data.responseCode && data.responseCode !== 'OK')) {
-      throw new Error(data?.params?.errmsg || `Finalize upload failed (${resp.status})`);
+    let data: { responseCode?: string; params?: { errmsg?: string } } = {};
+    let parseFailed = false;
+    try { data = await resp.json(); } catch { parseFailed = true; }
+    if (!resp.ok || parseFailed || (data.responseCode && data.responseCode !== 'OK')) {
+      throw new Error(data?.params?.errmsg
+        || (parseFailed ? `Malformed finalize response (${resp.status})` : `Finalize upload failed (${resp.status})`));
     }
   }
 
   /** Upload a remote URL (YouTube / direct link) as the artifact — no cloud PUT. */
   async finalizeUrl(contentId: string, sourceUrl: string, mimeType: string): Promise<void> {
+    // Only forward http(s) links. This is a first-line guard against SSRF (file://, gopher://,
+    // internal schemes) — the backend MUST still validate/allow-list the URL before fetching it.
+    if (!/^https?:\/\//i.test(sourceUrl.trim())) {
+      const e = new Error('Please Provide Valid File Url!') as Error & { code?: string };
+      e.code = 'ERR_INVALID_FILE_URL';
+      throw e;
+    }
     const { baseUrl, apiSlug, headers, fetchImpl } = this.service.getBase();
     const ep = this.service.getEndpoints().uploadFinalize;
     const form = new FormData();
@@ -219,9 +241,12 @@ export class UploadService {
       credentials: 'same-origin',
       body: form,
     });
-    const data = await resp.json().catch(() => ({}));
-    if (!resp.ok || (data.responseCode && data.responseCode !== 'OK')) {
-      const e = new Error(data?.params?.errmsg || `Finalize URL failed (${resp.status})`) as Error & { code?: string };
+    let data: { responseCode?: string; params?: { errmsg?: string; err?: string } } = {};
+    let parseFailed = false;
+    try { data = await resp.json(); } catch { parseFailed = true; }
+    if (!resp.ok || parseFailed || (data.responseCode && data.responseCode !== 'OK')) {
+      const e = new Error(data?.params?.errmsg
+        || (parseFailed ? `Malformed finalize response (${resp.status})` : `Finalize URL failed (${resp.status})`)) as Error & { code?: string };
       e.code = data?.params?.err;
       throw e;
     }

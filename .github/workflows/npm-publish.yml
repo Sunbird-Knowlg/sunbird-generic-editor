@@ -5,12 +5,16 @@ on:
     tags:
       - '*'
 
+# Least privilege by default; the publish job needs no extra scopes.
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: editor-v2
 
 jobs:
-  # ── Functional tests: runs on push and pull_request ──────────────────────
+  # ── Lint, test & build: runs on every push and pull_request ──────────────
   test:
     name: Lint, Test & Build
     runs-on: ubuntu-22.04

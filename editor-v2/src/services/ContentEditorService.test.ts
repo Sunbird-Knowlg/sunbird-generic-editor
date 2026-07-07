@@ -51,6 +51,23 @@ describe('ContentEditorService config', () => {
   });
 });
 
+describe('ContentEditorService — malformed response', () => {
+  it('treats an unparseable 2xx body as a failure, not a silent success (negative)', async () => {
+    const savedFetch = globalThis.fetch;
+    globalThis.fetch = (async () => ({
+      ok: true,
+      status: 200,
+      json: async () => { throw new SyntaxError('Unexpected token < in JSON'); },
+    })) as unknown as typeof fetch;
+    try {
+      const svc = new ContentEditorService();
+      await expect(svc.sendForReview('do_1')).rejects.toThrow(/Malformed response/);
+    } finally {
+      globalThis.fetch = savedFetch;
+    }
+  });
+});
+
 describe('ContentEditorService.readRejectChecklist', () => {
   it('handles a successful response', async () => {
     const mockResponse = {

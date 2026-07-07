@@ -56,10 +56,15 @@ export function useEditor(opts: UseEditorOptions) {
   // Portal can override either cap via config.maxFileSizeMB; otherwise mode-specific defaults apply.
   const maxMB = config?.maxFileSizeMB ?? (largeUpload ? LARGE_UPLOAD_MAX_MB : DEFAULT_MAX_FILE_SIZE_MB);
 
+  /* Rebuild the service only when its API-affecting config actually changes (not on every
+     render — portal passes an inline `config` literal). An injected service always wins. */
+  const configKey = JSON.stringify({
+    baseUrl: config?.baseUrl, apiSlug: config?.apiSlug, headers: config?.headers, cloudStorage: config?.cloudStorage,
+  });
   const service = useMemo(
     () => opts.service ?? new ContentEditorService(config, undefined, context),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [opts.service, configKey],
   );
   const uploader = useMemo(() => new UploadService(service, config), [service, config]);
   const telemetry = useRef<TelemetryService | null>(null);
@@ -70,6 +75,11 @@ export function useEditor(opts: UseEditorOptions) {
       config?.telemetry?.url ? () => Promise.resolve() : null,
     );
   }
+  /* Keep telemetry's context current if the host swaps it (uid/sid/channel/pdata). */
+  useEffect(() => {
+    telemetry.current?.updateContext(context);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context.uid, context.sid, context.did, context.channel]);
 
   const [content, setContent] = useState<ContentData | null>(null);
   const [view, setView] = useState<EditorView>(initialId ? 'loading' : 'upload');
@@ -104,6 +114,12 @@ export function useEditor(opts: UseEditorOptions) {
   /** When true, the metadata drawer is in "edit-then-submit-for-review" flow. */
   const [reviewSubmitMode, setReviewSubmitMode] = useState(false);
   const lockedRef = useRef(false);
+  /** Id of the content we hold a lock on — used to retire on unmount. */
+  const lockedIdRef = useRef<string | null>(null);
+  /** Guards against re-entrant upload calls (double-click / drop) creating duplicates. */
+  const uploadingRef = useRef(false);
+  /** False once the hook unmounts — stops late async work touching a torn-down instance. */
+  const mountedRef = useRef(true);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const mode: EditorMode = resolveMode(content?.status, context.user?.roles);
@@ -125,6 +141,20 @@ export function useEditor(opts: UseEditorOptions) {
     toastTimer.current = setTimeout(() => setToast(null), 2800);
   }, []);
 
+  /* ---- Unmount guard: retire any held lock if the editor is torn down without close() ---- */
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (lockedIdRef.current) {
+        service.retireLock(lockedIdRef.current).catch(() => {});
+        lockedRef.current = false;
+        lockedIdRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   /* ---- Initial load ---- */
   useEffect(() => {
     telemetry.current?.start('content-editor');
@@ -135,13 +165,19 @@ export function useEditor(opts: UseEditorOptions) {
     service
       .readContent(initialId)
       .then((c) => {
+        if (!mountedRef.current) return; // editor torn down mid-load
         telemetry.current?.setObject(c.identifier);
         setContent(c);
         setView(c.artifactUrl ? 'player' : 'upload');
         // Lock the content when opened for editing (creator on a draft), mirroring the old editor.
         if (resolveMode(c.status, context.user?.roles) === 'edit' && !lockedRef.current) {
           service.createLock(c.identifier, context, c)
-            .then(() => { lockedRef.current = true; })
+            .then(() => {
+              // If we unmounted while the lock was being created, retire it right away.
+              if (!mountedRef.current) { service.retireLock(c.identifier).catch(() => {}); return; }
+              lockedRef.current = true;
+              lockedIdRef.current = c.identifier;
+            })
             .catch(() => { /* non-fatal: proceed without lock */ });
         }
       })
@@ -196,6 +232,7 @@ export function useEditor(opts: UseEditorOptions) {
         if (!lockedRef.current) {
           await service.createLock(id, context, data);
           lockedRef.current = true;
+          lockedIdRef.current = id;
         }
       } catch {
         /* non-fatal: proceed without lock */
@@ -208,6 +245,7 @@ export function useEditor(opts: UseEditorOptions) {
   /* ---- Upload a file ---- */
   const uploadFile = useCallback(
     async (file: File) => {
+      if (uploadingRef.current) return; // ignore re-entry (double-click / re-drop)
       if (!content?.identifier && !contentType) {
         showToast(t(lang, 'CONTENT_TYPE_REQUIRED'), 'error');
         return;
@@ -229,6 +267,7 @@ export function useEditor(opts: UseEditorOptions) {
         return;
       }
       cancelledRef.current = false;
+      uploadingRef.current = true;
       setBusy(true);
       setBusyAction('upload');
       setView('uploading');
@@ -256,6 +295,7 @@ export function useEditor(opts: UseEditorOptions) {
         showToast(t(lang, 'ERROR_UPLOAD'), 'error');
         setView(content?.artifactUrl ? 'player' : 'upload');
       } finally {
+        uploadingRef.current = false;
         setBusy(false);
         setBusyAction(null);
         if (!cancelledRef.current) setProgress(null);
@@ -267,6 +307,7 @@ export function useEditor(opts: UseEditorOptions) {
   /* ---- Upload from a URL ---- */
   const uploadFromUrl = useCallback(
     async (url: string) => {
+      if (uploadingRef.current) return; // ignore re-entry
       const link = url.trim();
       if (!link) return;
       if (!content?.identifier && !contentType) {
@@ -275,6 +316,7 @@ export function useEditor(opts: UseEditorOptions) {
       }
       const mimeType = detectUrlMime(link);
       cancelledRef.current = false;
+      uploadingRef.current = true;
       setUrlError(null);
       setBusy(true);
       setBusyAction('upload');
@@ -305,6 +347,7 @@ export function useEditor(opts: UseEditorOptions) {
           setView(content?.artifactUrl ? 'player' : 'upload');
         }
       } finally {
+        uploadingRef.current = false;
         setBusy(false);
         setBusyAction(null);
       }
@@ -315,6 +358,7 @@ export function useEditor(opts: UseEditorOptions) {
   /* ---- Cancel an in-flight upload (soft: resets UI; late finish is ignored) ---- */
   const cancelUpload = useCallback(() => {
     cancelledRef.current = true;
+    uploadingRef.current = false;
     setBusy(false);
     setBusyAction(null);
     setProgress(null);
@@ -395,9 +439,9 @@ export function useEditor(opts: UseEditorOptions) {
   );
 
   /* ---- Send for review ---- */
-  const validateForReview = useCallback((): string[] => {
+  const validateForReview = useCallback((override?: ContentData): string[] => {
     const errs: string[] = [];
-    const c = content;
+    const c = override ?? content;
     if (!c) return [t(lang, 'ERROR_LOAD')];
     if (!c.name || c.name === 'Untitled Content') errs.push(t(lang, 'TITLE'));
     if (!c.description) errs.push(t(lang, 'DESCRIPTION'));
@@ -413,8 +457,8 @@ export function useEditor(opts: UseEditorOptions) {
    * Async variant: fetches form/read with action='review' to get required fields
    * dynamically, then validates content against them. Falls back to static list on error.
    */
-  const validateForReviewAsync = useCallback(async (): Promise<string[]> => {
-    const c = content;
+  const validateForReviewAsync = useCallback(async (override?: ContentData): Promise<string[]> => {
+    const c = override ?? content;
     if (!c) return [t(lang, 'ERROR_LOAD')];
     try {
       const subtype = c.primaryCategory ?? c.contentType ?? '';
@@ -424,7 +468,7 @@ export function useEditor(opts: UseEditorOptions) {
           rootOrgId: context.user?.rootOrgId ?? context.channel,
         })
         : [];
-      if (fields.length === 0) return validateForReview();
+      if (fields.length === 0) return validateForReview(c);
       const errs: string[] = [];
       for (const f of fields) {
         if (!f.required) continue;
@@ -449,6 +493,7 @@ export function useEditor(opts: UseEditorOptions) {
       if (lockedRef.current) {
         service.retireLock(content.identifier).catch(() => {});
         lockedRef.current = false;
+        lockedIdRef.current = null;
       }
       showToast(t(lang, 'TOAST_SENT_REVIEW'));
       setDrawer(null);
@@ -470,9 +515,10 @@ export function useEditor(opts: UseEditorOptions) {
       if (!content?.identifier) return;
       setBusy(true);
       setBusyAction('save-submit');
+      let merged: ContentData;
       try {
         const res = await service.updateContent(content.identifier, fields, content.versionKey);
-        const merged = { ...content, ...fields, versionKey: res?.versionKey ?? content.versionKey } as ContentData;
+        merged = { ...content, ...fields, versionKey: res?.versionKey ?? content.versionKey } as ContentData;
         setContent(merged);
         telemetry.current?.interact('modify', 'metadata', 'save');
         emit(EDITOR_EVENTS.SAVED, { id: content.identifier });
@@ -483,8 +529,8 @@ export function useEditor(opts: UseEditorOptions) {
         setBusyAction(null);
         return;
       }
-      // Re-validate the just-saved content against the review form.
-      const errs = await validateForReviewAsync();
+      // Re-validate the just-saved content (pass `merged` — `content` in closure is pre-save).
+      const errs = await validateForReviewAsync(merged);
       if (errs.length) {
         setReviewErrors(errs);
         setBusy(false);
@@ -499,6 +545,7 @@ export function useEditor(opts: UseEditorOptions) {
         if (lockedRef.current) {
           service.retireLock(content.identifier).catch(() => {});
           lockedRef.current = false;
+          lockedIdRef.current = null;
         }
         showToast(t(lang, 'TOAST_SENT_REVIEW'));
         setReviewSubmitMode(false);

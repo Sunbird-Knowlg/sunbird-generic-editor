@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import JSZip from 'jszip';
 import { detectFileMime, detectUrlMime, UploadService } from './UploadService';
 import { ContentEditorService } from './ContentEditorService';
@@ -93,6 +93,21 @@ describe('UploadService.finalizeUrl', () => {
         code: 'ERR_INVALID_FILE_URL',
         message: 'Please Provide Valid File Url!',
       });
+    } finally {
+      globalThis.fetch = savedFetch;
+    }
+  });
+
+  it('rejects a non-http(s) URL before hitting the network (SSRF guard, negative)', async () => {
+    const savedFetch = globalThis.fetch;
+    const spy = vi.fn();
+    globalThis.fetch = spy as unknown as typeof fetch;
+    try {
+      const uploader = new UploadService(new ContentEditorService());
+      await expect(uploader.finalizeUrl('do_1', 'file:///etc/passwd', MIME_URL)).rejects.toMatchObject({
+        code: 'ERR_INVALID_FILE_URL',
+      });
+      expect(spy).not.toHaveBeenCalled();
     } finally {
       globalThis.fetch = savedFetch;
     }

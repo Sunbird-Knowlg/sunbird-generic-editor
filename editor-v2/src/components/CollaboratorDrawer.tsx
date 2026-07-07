@@ -74,8 +74,11 @@ const CollaboratorDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
   const hasMore = filtered.length > shown;
   const isCollab = (id: string) => collabIds.includes(id);
 
-  /** Persist a new collaborator list, then sync local state. */
+  /** Persist a new collaborator list, then sync local state.
+   *  Serialized: ignores a new click while one PATCH is in flight so concurrent
+   *  add/remove can't each send a stale list and clobber each other. */
   const persist = async (next: string[], id: string) => {
+    if (pending) return;
     setPending(id);
     try {
       await saveCollaborators(next);
@@ -128,7 +131,7 @@ const CollaboratorDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
                       type="button"
                       className="ce-collab-pill ce-collab-pill--remove"
                       onClick={() => remove(p.id)}
-                      disabled={busy || inFlight}
+                      disabled={busy || pending !== null}
                     >
                       {inFlight ? <span className="ce-spinner ce-spinner--xs" /> : t(lang, 'REMOVE')}
                     </button>
@@ -140,7 +143,7 @@ const CollaboratorDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
                     type="button"
                     className="ce-collab-pill ce-collab-pill--add"
                     onClick={() => add(p.id)}
-                    disabled={busy || inFlight}
+                    disabled={busy || pending !== null}
                   >
                     {inFlight ? <span className="ce-spinner ce-spinner--xs" /> : `+ ${t(lang, 'ADD')}`}
                   </button>

@@ -90,6 +90,8 @@ export class ContentEditorService {
     const contextHeaders: Record<string, string> = {
       'X-Requested-With': 'XMLHttpRequest',
       ...(did ? { 'X-device-Id': did } : {}),
+      // `user-id` is client-supplied and unauthenticated — the backend MUST derive the real
+      // identity from the session/keycloak token and never trust this header for authorization.
       ...(context?.uid ? { 'user-id': context.uid } : {}),
     };
     this.headers = {
@@ -116,12 +118,22 @@ export class ContentEditorService {
       credentials: 'same-origin',
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
-    const data = await resp.json().catch(() => ({}));
+    // A malformed/unparseable body must NOT be read as success — every Sunbird action API
+    // returns a JSON envelope, so a parse failure means the write likely never landed.
+    let data: unknown = {};
+    let parseFailed = false;
+    try {
+      data = await resp.json();
+    } catch {
+      parseFailed = true;
+    }
     const code = (data as { responseCode?: string }).responseCode;
-    if (!resp.ok || (code && code !== 'OK' && code !== 'ok')) {
+    if (!resp.ok || parseFailed || (code && code !== 'OK' && code !== 'ok')) {
       const errmsg =
         (data as { params?: { errmsg?: string; err?: string } }).params?.errmsg ||
-        `Request failed (${resp.status}) for ${path}`;
+        (parseFailed
+          ? `Malformed response (${resp.status}) for ${path}`
+          : `Request failed (${resp.status}) for ${path}`);
       const err = new Error(errmsg) as Error & { code?: string; status?: number; body?: unknown };
       err.code = (data as { params?: { err?: string } }).params?.err;
       err.status = resp.status;

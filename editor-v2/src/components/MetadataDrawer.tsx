@@ -115,6 +115,8 @@ const MetadataDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const loadedFw = useRef<string | null>(null);
   const loadedFormKey = useRef<string | null>(null);
+  /** Content id already seeded this open-session — prevents an async form load re-seeding over edits. */
+  const seededRef = useRef<string | null>(null);
 
   /* Framework categories for taxonomy cascade. */
   useEffect(() => {
@@ -162,7 +164,11 @@ const MetadataDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
   /* Seed values from content once the field set is known — string fields into
      `values`, multiselect fields into `multiVals`, driven by the form definition. */
   useEffect(() => {
-    if (!open || !content) return;
+    if (!open) { seededRef.current = null; return; } // reset so the next open re-seeds
+    if (!content) return;
+    // Seed once per open-session; a later async form-fields load must not clobber user typing.
+    if (seededRef.current === content.identifier) return;
+    seededRef.current = content.identifier;
     const vals: Record<string, string> = {
       name: content.name ?? '',
       description: content.description ?? '',
@@ -205,11 +211,31 @@ const MetadataDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
     }
   };
 
+  /** Labels of required, editable, visible fields left empty (any inputType). */
+  const missingRequired = (): string[] => {
+    const miss: string[] = [];
+    for (const f of fields) {
+      if (!f.required || f.editable === false || f.visible === false) continue;
+      const code = f.code;
+      let empty: boolean;
+      if (code === 'appicon' || code === 'appIcon') empty = !appIcon;
+      else if (isMultiField(f)) empty = (multiVals[code] ?? []).length === 0;
+      else empty = !((values[code] ?? '').trim());
+      if (empty) miss.push(f.label ?? f.name ?? code);
+    }
+    return miss;
+  };
+
   const onSave = () => {
     const nameField = fields.find((f) => f.code === 'name');
     if (nameField?.required !== false && !(values.name ?? '').trim()) {
       showToast(t(lang, 'ERROR_TITLE_REQUIRED'), 'error');
       return;
+    }
+    // On the submit-for-review path, enforce every required field the form marks (not just name).
+    if (reviewSubmitMode) {
+      const miss = missingRequired();
+      if (miss.length) { setReviewErrors(miss); return; }
     }
     const out: Record<string, unknown> = {};
     for (const f of fields) {
