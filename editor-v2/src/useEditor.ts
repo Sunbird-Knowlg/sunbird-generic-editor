@@ -39,10 +39,14 @@ export interface ToastState {
 const REVIEWER_ROLES = ['CONTENT_REVIEWER', 'BOOK_REVIEWER'];
 
 function resolveMode(status: string | undefined, roles: string[] = []): EditorMode {
-  const s = (status || STATUS.DRAFT).toLowerCase();
+  const s = (status || STATUS.DRAFT).toLowerCase().trim();
   const isReviewer = roles.some((r) => REVIEWER_ROLES.includes(r));
-  if (['processing', 'flagged', 'flagdraft', 'flagreview'].includes(s)) return 'read';
+  // Non-editable workflow states (mid-publish, flagged, retired).
+  if (['processing', 'flagged', 'flagdraft', 'flagreview', 'retired'].includes(s)) return 'read';
+  // Under review: only a reviewer gets the review actions; everyone else is read-only.
   if (s === 'review') return isReviewer ? 'review' : 'read';
+  // Draft / Live / Unlisted (and anything else) → fully editable. Editing a Live
+  // content creates a new draft version upstream; the header still shows all actions.
   return 'edit';
 }
 

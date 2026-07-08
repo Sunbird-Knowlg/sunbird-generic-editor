@@ -94,6 +94,15 @@
   flex-shrink: 0;
 }
 
+/* No app icon yet → show an app-icon placeholder (dashed box + image glyph)
+   instead of the brand logo. */
+.ce-logo-mark--placeholder {
+  border: 1.5px dashed var(--ce-border);
+  border-radius: 9px;
+  background: var(--ce-bg-2);
+  color: var(--ce-slate-400);
+}
+
 .ce-divider {
   width: 1px;
   height: 28px;
@@ -109,7 +118,6 @@
   cursor: pointer;
   padding: 6px 10px;
   border-radius: 10px;
-  margin-inline-start: -10px;
   transition: background 0.15s;
   flex-shrink: 0;
   max-width: 380px;
@@ -390,7 +398,6 @@
   width: 100%;
   border: 1.5px solid var(--ce-border);
   border-radius: 11px;
-  font-size: 14px;
   color: var(--ce-ink);
   font-family: var(--ce-font);
   background: var(--ce-white);
@@ -399,8 +406,12 @@
 }
 
 .ce-select {
-  height: 46px;
-  padding: 0 40px 0 14px;
+  /* Match the multi-select control (.ce-multi-control) so single/multi fields line up.
+     Size via symmetric vertical padding (not a fixed height) with a normal line-height
+     so an appearance:none <select> centres its value and never clips descenders. */
+  line-height: 1.4;
+  font-size: 13px;
+  padding: 10px 40px 10px 14px;
   appearance: none;
   cursor: pointer;
 }
@@ -917,17 +928,27 @@
 }
 
 .ce-spinner--xs {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-width: 2px;
   display: inline-block;
-  vertical-align: -2px;
+  vertical-align: -1px;
 }
 
 .ce-spinner--sm {
   width: 36px;
   height: 36px;
   border-width: 3px;
+}
+
+/* In-button loaders must always be tiny, regardless of any size modifier or
+   stale/cached CSS. Higher specificity than .ce-spinner / .ce-spinner--xs so it
+   always wins inside buttons. */
+.ce-btn .ce-spinner,
+.ce-icon-btn .ce-spinner {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
 }
 
 /* Dropzone uploading state */
@@ -2540,4 +2561,48 @@
   .ce-type-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+/* ============================================================
+ * COLLISION GUARD — scoped form-control overrides
+ * ------------------------------------------------------------
+ * Sibling editors (e.g. @project-sunbird/sunbird-questionset-editor-web-component-react)
+ * ship their OWN unscoped `.ce-input/.ce-select/.ce-textarea` rules that leak globally
+ * and override ours when their stylesheet loads later. Re-declaring these under the
+ * `.ce-editor` root (everything in this editor renders inside it — no portals) raises
+ * specificity to (0,2,0) so our values always win, and stops the foreign SVG-background
+ * chevron from doubling up with our `.ce-select-chevron` span.
+ * ============================================================ */
+.ce-editor .ce-input,
+.ce-editor .ce-select,
+.ce-editor .ce-textarea {
+  font-size: 14px;
+  color: var(--ce-ink);
+  border: 1.5px solid var(--ce-border);
+  border-radius: 11px;
+  background: var(--ce-white);
+  background-image: none;
+}
+
+.ce-editor .ce-select {
+  line-height: 1.4;
+  font-size: 13px;
+  padding: 10px 40px 10px 14px;
+  background-image: none;
+}
+
+.ce-editor .ce-input {
+  height: 46px;
+  padding: 0 14px;
+}
+
+.ce-editor .ce-textarea {
+  padding: 10px 14px;
+  line-height: 1.6;
+}
+
+.ce-editor .ce-input-sm,
+.ce-editor .ce-select-sm,
+.ce-editor .ce-textarea-sm {
+  font-size: 13px;
+  border-radius: 10px;
 }

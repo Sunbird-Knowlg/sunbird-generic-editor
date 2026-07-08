@@ -2,7 +2,7 @@ import React from 'react';
 import type { EditorController } from '../useEditor';
 import { t } from '../i18n/i18n';
 import {
-  SunbirdLogoIcon, PencilIcon, SaveIcon, CloseIcon, SendIcon, UserPlusIcon, CheckIcon, CommentIcon,
+  ImageIcon, PencilIcon, SaveIcon, CloseIcon, SendIcon, UserPlusIcon, CheckIcon, CommentIcon,
 } from '../icons';
 import { STATUS } from '../constants';
 
@@ -18,12 +18,12 @@ const Header: React.FC<{ ed: EditorController }> = ({ ed }) => {
   return (
     <header className="ce-header">
       <div className="ce-logo">
-        <div className="ce-logo-mark">
+        <div className={`ce-logo-mark${content?.appIcon || headerLogo ? '' : ' ce-logo-mark--placeholder'}`}>
           {content?.appIcon
             ? <img src={content.appIcon} alt="" className="ce-logo-img" />
             : headerLogo
               ? <img src={headerLogo} alt="" className="ce-logo-img" />
-              : <SunbirdLogoIcon size={34} />}
+              : <ImageIcon size={18} />}
         </div>
       </div>
 

@@ -13,7 +13,7 @@
  *   />
  */
 import React from 'react';
-import './editor.css';
+import './editor.scss';
 import { useEditor, type UseEditorOptions } from './useEditor';
 import { getDir } from './i18n/i18n';
 import Header from './components/Header';
