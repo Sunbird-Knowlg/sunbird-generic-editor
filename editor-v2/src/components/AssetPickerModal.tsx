@@ -248,7 +248,7 @@ const AssetPickerModal: React.FC<{ ed: EditorController }> = ({ ed }) => {
                   disabled={loadingMore}
                   onClick={() => load(tab, query, true)}
                 >
-                  {loadingMore ? <span className="ce-spinner ce-spinner--sm" /> : t(lang, 'LOAD_MORE')}
+                  {loadingMore ? <span className="ce-spinner ce-spinner--xs" /> : t(lang, 'LOAD_MORE')}
                 </button>
               )}
             </>
@@ -268,7 +268,7 @@ const AssetPickerModal: React.FC<{ ed: EditorController }> = ({ ed }) => {
               onClick={uploadStaged}
             >
               {uploading
-                ? <><span className="ce-spinner ce-spinner--sm" /> {t(lang, 'UPLOADING')}</>
+                ? <><span className="ce-spinner ce-spinner--xs" /> {t(lang, 'UPLOADING')}</>
                 : <><UploadIcon size={13} /> {t(lang, 'UPLOAD_AND_USE')}</>}
             </button>
           ) : (
