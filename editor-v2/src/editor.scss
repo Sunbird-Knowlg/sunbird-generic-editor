@@ -22,6 +22,7 @@
 }
 
 .ce-editor {
+& {
   /* ---- Derived theme-reactive tokens (scoped to the editor root) ---- */
   --ce-primary: hsl(var(--sunbird-spark-theme-primary-h) var(--sunbird-spark-theme-primary-s) var(--sunbird-spark-theme-primary-l));
   --ce-primary-strong: hsl(var(--sunbird-spark-theme-primary-h) var(--sunbird-spark-theme-primary-s) calc(var(--sunbird-spark-theme-primary-l) - 8%));
@@ -57,9 +58,9 @@
   color: var(--ce-ink);
 }
 
-.ce-editor *,
-.ce-editor *::before,
-.ce-editor *::after {
+& *,
+& *::before,
+& *::after {
   box-sizing: border-box;
 }
 
@@ -901,11 +902,6 @@
   animation: ce-spin 0.9s linear infinite;
 }
 
-@keyframes ce-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 .ce-progress-track {
   width: 320px;
@@ -1085,7 +1081,10 @@
   border-radius: 18px;
   box-shadow: 0 4px 6px rgba(15, 23, 42, 0.04), 0 12px 36px rgba(15, 23, 42, 0.08);
   overflow: hidden;
-  margin-top: 18px;
+  /* Centre via auto margins, not the parent's align-items — a sibling package
+     forces `.ce-main { align-items: normal !important }` which specificity can't
+     beat; auto margins are immune to it. */
+  margin: 18px auto 0;
 }
 
 .ce-preview-bar {
@@ -1623,41 +1622,10 @@
   color: #fff;
 }
 
-@keyframes ce-toast-up {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-}
 
 /* Centered overlay: fade the backdrop only — no horizontal shift. */
-@keyframes ce-overlay-fade {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
 
 /* Centered modal card: rise + scale in place. */
-@keyframes ce-modal-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
 
 /* ============================ STATES ============================ */
 .ce-center {
@@ -2562,47 +2530,63 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+}
+
+@keyframes ce-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ce-toast-up {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes ce-overlay-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ce-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* ============================================================
- * COLLISION GUARD — scoped form-control overrides
- * ------------------------------------------------------------
- * Sibling editors (e.g. @project-sunbird/sunbird-questionset-editor-web-component-react)
- * ship their OWN unscoped `.ce-input/.ce-select/.ce-textarea` rules that leak globally
- * and override ours when their stylesheet loads later. Re-declaring these under the
- * `.ce-editor` root (everything in this editor renders inside it — no portals) raises
- * specificity to (0,2,0) so our values always win, and stops the foreign SVG-background
- * chevron from doubling up with our `.ce-select-chevron` span.
+ * FOREIGN GLOBAL-RESET GUARD
+ * A sibling package (questionset editor) ships an element-level reset that leaks
+ * document-wide: `p,li,figcaption { max-inline-size: 70ch; text-wrap: pretty }`
+ * and `h1..h6 { text-wrap: balance }`. Those cap our paragraphs at ~70ch and
+ * balance short lines mid-sentence. Re-assert normal flow for editor text
+ * (specificity 0,1,1 > their 0,0,1 — no !important needed).
  * ============================================================ */
-.ce-editor .ce-input,
-.ce-editor .ce-select,
-.ce-editor .ce-textarea {
-  font-size: 14px;
-  color: var(--ce-ink);
-  border: 1.5px solid var(--ce-border);
-  border-radius: 11px;
-  background: var(--ce-white);
-  background-image: none;
+.ce-editor p,
+.ce-editor li,
+.ce-editor figcaption {
+  max-inline-size: none;
+  text-wrap: wrap;
 }
-
-.ce-editor .ce-select {
-  line-height: 1.4;
-  font-size: 13px;
-  padding: 10px 40px 10px 14px;
-  background-image: none;
-}
-
-.ce-editor .ce-input {
-  height: 46px;
-  padding: 0 14px;
-}
-
-.ce-editor .ce-textarea {
-  padding: 10px 14px;
-  line-height: 1.6;
-}
-
-.ce-editor .ce-input-sm,
-.ce-editor .ce-select-sm,
-.ce-editor .ce-textarea-sm {
-  font-size: 13px;
-  border-radius: 10px;
+.ce-editor h1, .ce-editor h2, .ce-editor h3,
+.ce-editor h4, .ce-editor h5, .ce-editor h6 {
+  text-wrap: wrap;
 }
