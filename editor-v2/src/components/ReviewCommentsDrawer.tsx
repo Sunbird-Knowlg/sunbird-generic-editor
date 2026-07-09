@@ -52,6 +52,7 @@ const ReviewCommentsDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
       onClose={() => setDrawer(null)}
       titleIcon={<CommentIcon size={18} />}
       title={t(lang, 'REVIEWER_SUGGESTIONS')}
+      closeLabel={t(lang, 'CLOSE')}
     >
       {loading ? (
         <div className="ce-center" style={{ padding: 40 }}>
@@ -94,17 +95,25 @@ const ReviewCommentsDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
             </label>
           )}
 
-          {/* Comment */}
-          <div className="ce-checklist-comment-section">
-            <h4 className="ce-checklist-heading">{t(lang, 'COMMENTS_LABEL')}</h4>
-            <textarea
-              className="ce-textarea ce-textarea-sm"
-              value={rejectComment}
-              disabled
-              readOnly
-              rows={3}
-            />
-          </div>
+          {/* Comment — only when the reviewer actually left one, so the drawer
+              never shows a lone floating empty textarea (e.g. a fresh draft). */}
+          {rejectComment && (
+            <div className="ce-checklist-comment-section">
+              <h4 className="ce-checklist-heading">{t(lang, 'COMMENTS_LABEL')}</h4>
+              <textarea
+                className="ce-textarea ce-textarea-sm"
+                value={rejectComment}
+                disabled
+                readOnly
+                rows={3}
+              />
+            </div>
+          )}
+
+          {/* Nothing to show — no checklist, no reasons, no comment. */}
+          {categories.length === 0 && rejectReasons.length === 0 && !rejectComment && (
+            <p className="ce-checklist-empty">{t(lang, 'NO_REVIEW_COMMENTS')}</p>
+          )}
 
           {/* Fallback when no checklist categories loaded but there are reasons */}
           {categories.length === 0 && rejectReasons.length > 0 && (

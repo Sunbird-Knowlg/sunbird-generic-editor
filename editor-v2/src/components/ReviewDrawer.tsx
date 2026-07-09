@@ -27,6 +27,7 @@ const ReviewDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
         onClose={() => setDrawer(null)}
         titleIcon={<SendIcon size={18} />}
         title={t(lang, 'REQUEST_CHANGES')}
+        closeLabel={t(lang, 'CLOSE')}
         footer={
           <>
             <button type="button" className="ce-btn ce-btn--ghost" onClick={() => setDrawer(null)}>
@@ -75,6 +76,7 @@ const ReviewDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
       onClose={() => setDrawer(null)}
       titleIcon={<SendIcon size={18} />}
       title={t(lang, 'REVIEW_TITLE')}
+      closeLabel={t(lang, 'CLOSE')}
       footer={
         <>
           <button type="button" className="ce-btn ce-btn--ghost" onClick={() => setDrawer(null)}>
