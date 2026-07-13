@@ -1,6 +1,6 @@
 {
   "name": "@project-sunbird/generic-editor-v2",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Sunbird Generic Editor — React content upload/generic editor (theme-reactive, multilingual). Fork of @sunbird/content-editor that previews via the legacy ekstep content renderer.",
   "main": "dist/sunbird-generic-editor.umd.js",
   "module": "dist/sunbird-generic-editor.es.js",

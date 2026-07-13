@@ -97,6 +97,7 @@ const CollaboratorDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
       onClose={() => setDrawer(null)}
       titleIcon={<UserPlusIcon size={18} />}
       title={t(lang, 'ADD_COLLABORATORS')}
+      closeLabel={t(lang, 'CLOSE')}
     >
       <div className="ce-input-icon">
         <span className="ce-leading"><SearchIcon size={14} /></span>

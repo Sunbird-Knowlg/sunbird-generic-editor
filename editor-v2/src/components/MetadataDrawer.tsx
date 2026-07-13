@@ -348,6 +348,7 @@ const MetadataDrawer: React.FC<{ ed: EditorController }> = ({ ed }) => {
       onClose={onClose}
       titleIcon={<PencilIcon size={18} />}
       title={t(lang, 'EDIT_CONTENT_DETAILS')}
+      closeLabel={t(lang, 'CLOSE')}
       footer={
         <>
           <button type="button" className="ce-btn ce-btn--ghost" onClick={onClose}>

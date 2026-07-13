@@ -56,6 +56,8 @@ export const TRANSLATIONS_EN: Record<string, string> = {
   LARGE_RESOLUTION_NOTE: 'Set your video resolution to less than 720p HD',
   UPLOADING: 'Uploading…',
   PROCESSING: 'Processing your content…',
+  UPLOAD_SUCCESS_TITLE: 'Content uploaded successfully!',
+  UPLOAD_SUCCESS_SUB: 'Your content is ready to preview and configure.',
 
   /* Content categories */
   CAT_EXPLANATION_CONTENT: 'Explanation content',
@@ -135,6 +137,7 @@ export const TRANSLATIONS_EN: Record<string, string> = {
   REJECT_REASONS: 'Reasons',
   COMMENTS_LABEL: 'Comments',
   COMMENT_PLACEHOLDER: 'Write your feedback…',
+  NO_REVIEW_COMMENTS: 'No reviewer suggestions yet.',
 
   /* Preview */
   PREVIEW: 'Preview',

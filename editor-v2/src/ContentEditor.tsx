@@ -83,8 +83,8 @@ const ContentEditor: React.FC<ContentEditorProps> = (props) => {
         <div className="ce-upload-success-overlay">
           <div className="ce-upload-success-card">
             <div className="ce-upload-success-icon"><CheckIcon size={28} /></div>
-            <p className="ce-upload-success-title">Content uploaded successfully!</p>
-            <p className="ce-upload-success-sub">Your content is ready to preview and configure.</p>
+            <p className="ce-upload-success-title">{t(ed.lang, 'UPLOAD_SUCCESS_TITLE')}</p>
+            <p className="ce-upload-success-sub">{t(ed.lang, 'UPLOAD_SUCCESS_SUB')}</p>
           </div>
         </div>
       )}
