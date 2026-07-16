@@ -1,3 +1,7 @@
+### ⚠️ Archived. 
+#### This repository is no longer maintained. Development has moved to the new React-based editor: generic-editor-v2. Please file issues and submit changes there.
+https://github.com/Sunbird-Knowlg/generic-editor-v2
+
 # Generic editor
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1902ad4c61a74e3c98ba11a6a16e08eb)](https://app.codacy.com/app/sunbird-bot/sunbird-generic-editor?utm_source=github.com&utm_medium=referral&utm_content=project-sunbird/sunbird-generic-editor&utm_campaign=Badge_Grade_Settings)
